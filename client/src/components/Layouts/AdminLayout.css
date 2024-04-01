@@ -1,0 +1,25 @@
+.nav-item {
+    color: #4c4c4d;
+    font-weight: 500;
+}
+
+.btn-toggle-nav a {
+    padding: 3px 20px;
+    margin-left: 20px;
+    color: #4c4c4d !important;
+}
+
+.btn-toggle-nav a:hover,
+.btn-toggle-nav a:focus {
+    color: #0068D8;
+}
+
+.nav-item.active {
+    color: #0068D8;
+    border-radius: 0.25rem;
+    background: #f0efef;
+}
+
+.nav-item:hover {
+    background: #f0efef;
+}
