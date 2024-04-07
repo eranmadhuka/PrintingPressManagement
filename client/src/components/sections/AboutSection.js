@@ -4,8 +4,8 @@ import AboutImg from '../../assets/images/about.png'
 const AboutSection = () => {
     return (
         <>
-            <section className='bg-white' >
-                <div className="container  p-5">
+            <section className='bg-white'>
+                <div className="container p-5">
                     <div className="row d-flex justify-content-center align-items-center">
                         <div className="col-lg-6 d-none d-md-block">
                             <img src={AboutImg} alt="AboutImg" style={{ 'width': '100%' }} />

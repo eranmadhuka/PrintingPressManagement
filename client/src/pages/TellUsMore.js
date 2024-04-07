@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const TellUsMore = () => {
     return (
@@ -52,10 +53,9 @@ const TellUsMore = () => {
                                             <input className="form-control" type="file" id="formFile" />
                                         </div>
                                     </div>
-                                    <div className="d-grid gap-2 pt-3">
+                                    <Link to='/checkout' className='d-grid gap-2 pt-3'>
                                         <button type="submit" className="btn btn-primary">Complete Order</button>
-                                    </div>
-
+                                    </Link>
                                 </form>
                             </div>
                         </div>

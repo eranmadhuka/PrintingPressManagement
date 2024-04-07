@@ -13,6 +13,7 @@ import Register from './pages/Register';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 import TellUsMore from './pages/TellUsMore';
+import Checkout from './pages/Checkout';
 
 function PublicLayout() {
   return (
@@ -29,6 +30,7 @@ function PublicLayout() {
 
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/tell-us-more" element={<TellUsMore />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
       <Footer />
     </>
