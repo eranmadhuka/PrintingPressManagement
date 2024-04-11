@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -10,6 +10,7 @@ const CreateDelivery = () => {
   const [customerId, setCustomerId] = useState("");
   const [address, setAddress] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  const [vehicles, setVehicles] = useState([]); // State variable for vehicles
   const navigate = useNavigate();
 
   // State variables for validation errors
@@ -19,6 +20,20 @@ const CreateDelivery = () => {
   const [customerIdError, setCustomerIdError] = useState("");
   const [addressError, setAddressError] = useState("");
   const [confirmedError, setConfirmedError] = useState("");
+
+  useEffect(() => {
+    // Fetch vehicles from the server
+    const fetchVehicles = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/");
+        setVehicles(response.data); // Assuming response.data is an array of vehicles
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+      }
+    };
+
+    fetchVehicles();
+  }, []); // Empty dependency array means this effect runs once on component mount
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,13 +87,13 @@ const CreateDelivery = () => {
 
       try {
         // Send POST request to create delivery
-        const response = await axios
-          .post("http://localhost:5000/api/deliveries/", deliveryData)
-          .then((response) => {
-            console.log(response.data);
-            alert("Delivery added successfully!");
-            navigate("/admin/transport/delivery");
-          });
+        const response = await axios.post(
+          "http://localhost:5000/api/deliveries/",
+          deliveryData
+        );
+        console.log(response.data);
+        alert("Delivery added successfully!");
+        navigate("/admin/transport/delivery");
       } catch (error) {
         console.error("Error adding delivery:", error);
         alert("Failed to add delivery. Please try again.");
@@ -130,13 +145,19 @@ const CreateDelivery = () => {
               <label htmlFor="vehicleid" className="form-label">
                 Vehicle Id
               </label>
-              <input
-                type="text"
-                className={`form-control ${vehicleIdError ? "is-invalid" : ""}`}
+              <select
+                className={`form-select ${vehicleIdError ? "is-invalid" : ""}`}
                 id="vehicleid"
                 value={vehicleId}
                 onChange={(e) => setVehicleId(e.target.value)}
-              />
+              >
+                <option value="">Select Vehicle</option>
+                {vehicles.map((vehicle) => (
+                  <option key={vehicle._id} value={vehicle._id}>
+                    {vehicle.name} - {vehicle.id}
+                  </option>
+                ))}
+              </select>
               {vehicleIdError && (
                 <div className="invalid-feedback">{vehicleIdError}</div>
               )}
