@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import axios from "axios";
+import * as XLSX from "xlsx";
 
 const Delivery = () => {
   const [delivery, setDelivery] = useState([]);
@@ -61,6 +62,20 @@ const Delivery = () => {
     }
   };
 
+  const exportToExcel = () => {
+    // Creating a new workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Convert delivery data array to a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(delivery);
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Deliveries");
+
+    // Generate an Excel file and trigger download
+    XLSX.writeFile(workbook, "DeliveryData.xlsx");
+  };
+
   return (
     <AdminLayout>
       <div className="bg-white p-3 mt-2">
@@ -77,6 +92,9 @@ const Delivery = () => {
               onChange={handleDeliverySearchChange}
             />
           </form>
+          <button className="btn btn-success" onClick={exportToExcel}>
+            Export to Excel
+          </button>
           <a href="../transport/UpdateDelivery" className="btn btn-primary">
             + Add Delivery
           </a>
