@@ -34,6 +34,11 @@ const orderSchema = new mongoose.Schema({
 });
 
 // Create model for Order
-const Order = mongoose.model('orders', orderSchema);
+const Order = mongoose.model('Orders', orderSchema);
 
 module.exports = Order;
+
+// Create model for Customer
+// const Customer = mongoose.model('Customer', customerSchema);
+
+// module.exports = Customer;
