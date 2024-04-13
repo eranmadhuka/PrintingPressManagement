@@ -1,10 +1,11 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 
-import EmployeeDashboard from '../../components/dashboard/employeeDashboard/EmployeeDashboard'
-import EmployeeLeaves from '../dashboard/employeeDashboard/EmployeeLeaves';
-import EmployeeAttendance from '../dashboard/employeeDashboard/EmployeeAttendance';
-import AccountSetting from '../dashboard/employeeDashboard/AccountSetting';
+import EmployeeDashboard from "../../components/dashboard/employeeDashboard/EmployeeDashboard";
+import EmployeeLeaves from "../dashboard/employeeDashboard/EmployeeLeaves";
+import EmployeeAttendance from "../dashboard/employeeDashboard/EmployeeAttendance";
+import AddLeave from "../dashboard/employeeDashboard/AddLeave";
+import UpdateLeaves from "../dashboard/employeeDashboard/UpdateLeaves";
 
 const EmployeeRoutes = () => {
     return (
@@ -12,9 +13,10 @@ const EmployeeRoutes = () => {
             <Route path="/" element={<EmployeeDashboard />} />
             <Route path="/leaves" element={<EmployeeLeaves />} />
             <Route path="/attendance" element={<EmployeeAttendance />} />
-            <Route path="/accountSetting" element={<AccountSetting />} />
+            <Route path="/addLeave" element={<AddLeave />} />
+            <Route path="/updateLeave/:id" element={<UpdateLeaves />} />
         </Routes>
-    )
-}
+    );
+};
 
-export default EmployeeRoutes
+export default EmployeeRoutes;
