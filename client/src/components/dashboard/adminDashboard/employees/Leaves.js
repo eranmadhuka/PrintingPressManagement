@@ -26,7 +26,7 @@ const Leaves = () => {
 
     // Function to handle status update
     const handleStatusUpdate = (leaveID, newStatus) => {
-        axios.patch(`http://localhost:5000/employeeLeave/updateLeave/${leaveID}`, { status: newStatus })
+        axios.patch(`http://localhost:5000/employeeLeave/updateLeaveStatus/${leaveID}`, { status: newStatus })
             .then(response => {
                 // Update the status in the local state
                 const updateLeaveStatus = employee.map(item => {

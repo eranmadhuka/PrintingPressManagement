@@ -46,7 +46,7 @@ const AddLeave = () => {
         })
         .then((result) => {
           console.log(result);
-          navigate("/employee/leaves"); // Redirect after successful submission
+          navigate("/employee/leaves");
         })
         .catch((err) => console.log(err));
     } else {

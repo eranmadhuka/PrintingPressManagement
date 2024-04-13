@@ -10,6 +10,19 @@ router.get("/allLeaves", (req, res) => {
         .catch((err) => res.status(500).json({ error: err.message }));
 });
 
+// Get leave by ID
+router.get("/getLeave/:id", (req, res) => {
+    const id = req.params.id;
+    EmployeeLeave.findById(id)
+        .then((leave) => {
+            if (!leave) {
+                return res.status(404).json({ message: "Leave not found" });
+            }
+            res.json(leave);
+        })
+        .catch((err) => res.status(500).json({ error: err.message }));
+});
+
 // Get leaves by employee ID
 router.get("/employeeLeaves/:id", (req, res) => {
     const employeeId = req.params.id;
@@ -24,7 +37,7 @@ router.get("/employeeLeaves/:id", (req, res) => {
 });
 
 // Update leaves status by ID
-router.patch("/updateLeave/:id", (req, res) => {
+router.patch("/updateLeaveStatus/:id", (req, res) => {
     const id = req.params.id;
     EmployeeLeave.findByIdAndUpdate(
         id,
@@ -42,6 +55,27 @@ router.patch("/updateLeave/:id", (req, res) => {
         .catch((err) => res.status(500).json({ error: err.message }));
 });
 
+// Update leaves by ID
+router.put("/updateLeave/:id", (req, res) => {
+    const id = req.params.id;
+    EmployeeLeave.findByIdAndUpdate(
+        id,
+        {
+            reason: req.body.reason,
+            from: req.body.from,
+            to: req.body.to,
+            type: req.body.type,
+        },
+        { new: true } // To return the updated document
+    )
+        .then((leave) => {
+            if (!leave) {
+                return res.status(404).json({ message: "Leave not found" });
+            }
+            res.json(leave);
+        })
+        .catch((err) => res.status(500).json({ error: err.message }));
+});
 
 // Create new leave
 router.post("/createLeave", (req, res) => {

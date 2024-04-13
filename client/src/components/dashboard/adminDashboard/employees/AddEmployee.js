@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../../../Layouts/AdminLayout";
+import Swal from "sweetalert2";
 
 const AddEmployee = () => {
   const [fname, setfName] = useState("");
@@ -62,7 +63,7 @@ const AddEmployee = () => {
 
     if (Object.keys(errors).length === 0) {
       // Proceed with form submission
-      alert("Form submitted successfully!");
+      Swal.fire("Employee added successfully!");
       setErrors({});
     } else {
       setErrors(errors);

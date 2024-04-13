@@ -90,7 +90,7 @@ const UpdateEmployee = () => {
     }
 
     axios
-      .put("http://localhost:5000/employee/createEmp/" + id, {
+      .put("http://localhost:5000/employees/updateEmployee/" + id, {
         fname,
         lname,
         gender,

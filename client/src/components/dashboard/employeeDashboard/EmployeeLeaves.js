@@ -18,7 +18,7 @@ const EmployeeLeaves = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete("http://localhost:5000/employee/deleteUser/" + id)
+      .delete("http://localhost:5000/employeeLeave/deleteLeave/" + id)
       .then((res) => {
         console.log(res);
         window.location.reload();
@@ -79,7 +79,7 @@ const EmployeeLeaves = () => {
                     <span className={getStatusBadgeClass(item.status)}>{item.status}</span>
                   </td>
                   <td>
-                    <Link to={`/admin/employees/UpdateLeave/${item._id}`}>
+                    <Link to={`/employee/updateLeave/${item._id}`}>
                       <button className="btn btn-dark me-2">
                         <i className="bi bi-pencil-square"></i>
                       </button>

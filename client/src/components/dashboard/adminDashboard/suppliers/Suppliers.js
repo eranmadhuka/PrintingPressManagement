@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 const Suppliers = () => {
     const [supplier, setSupplier] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         axios
@@ -23,6 +24,11 @@ const Suppliers = () => {
             .catch((err) => console.log(err));
     };
 
+    const filteredSuppliers = supplier.filter(
+        (item) =>
+            item.supplierID.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <>
             <AdminLayout>
@@ -34,8 +40,10 @@ const Suppliers = () => {
                             <input
                                 className="form-control me-2"
                                 type="search"
-                                placeholder="Search"
+                                placeholder="Search by Suppplier ID"
                                 aria-label="Search"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </form>
                         <Link to="/admin/suppliers/add-spplier">
@@ -56,9 +64,9 @@ const Suppliers = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {supplier.map((supplier, index) => (
+                            {filteredSuppliers.map((supplier, index) => (
                                 <tr key={index}>
-                                    <td>{supplier._id}</td>
+                                    <td>{supplier.supplierID}</td>
                                     <td>{supplier.supplierName}</td>
                                     <td>{supplier.companyName}</td>
                                     <td>{supplier.companyAddress}</td>

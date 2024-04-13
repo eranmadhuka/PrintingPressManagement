@@ -19,7 +19,7 @@ router.get("/getUser/:id", (req, res) => {
 });
 
 // Update User by ID
-router.put("/updateUser/:id", (req, res) => {
+router.put("/updateEmployee/:id", (req, res) => {
     const id = req.params.id;
     Employee.findByIdAndUpdate(id, {
         fname: req.body.fname,
