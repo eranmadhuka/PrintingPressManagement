@@ -8,13 +8,13 @@ const Employees = () => {
 
     useEffect(() => {
         axios
-            .get("http://localhost:5000/employee")
+            .get("http://localhost:5000/employees")
             .then((result) => setEmployee(result.data))
             .catch((err) => console.log(err));
     }, []);
     const handleDelete = (id) => {
         axios
-            .delete("http://localhost:5000/employee/deleteUser/" + id)
+            .delete("http://localhost:5000/employees/deleteUser/" + id)
             .then((res) => {
                 console.log(res);
                 window.location.reload();
@@ -32,7 +32,7 @@ const Employees = () => {
                             <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
                         </form>
                         <Link to='/admin/employees/AddEmployee'>
-                            <button className='btn btn-primary'>+ Add Order</button>
+                            <button className='btn btn-primary'>+ Add Employee</button>
                         </Link>
                     </div>
 
@@ -43,7 +43,7 @@ const Employees = () => {
                                 <th scope="col">Full Name</th>
                                 <th scope="col">Gender</th>
                                 <th scope="col">Birth date</th>
-                                <th scope="col">Address </th>
+                                {/* <th scope="col">Address </th> */}
                                 <th scope="col">email</th>
                                 <th scope="col">Contact number</th>
                                 <th scope="col">designation</th>
@@ -55,30 +55,23 @@ const Employees = () => {
                             {employee.map((item) => {
                                 return (
                                     <tr>
-                                        <td>{item._id}</td>
+                                        <td>{item.empID}</td>
                                         <td>
                                             {item.fname} {item.lname}
                                         </td>
                                         <td>{item.gender}</td>
                                         <td>{item.birthDate}</td>
-                                        <td>{item.address}</td>
+                                        {/* <td>{item.address}</td> */}
                                         <td>{item.email}</td>
                                         <td>{item.phone}</td>
                                         <td>{item.designation}</td>
                                         <td>{item.department}</td>
                                         <td>
                                             <Link to={`/admin/employees/UpdateEmployee/${item._id}`}>
-                                                <button className="btn btn-dark me-2">
-                                                    <i className="bi bi-pencil-square"></i>
-                                                </button>
+                                                <i className="bi bi-pencil-square text-primary me-3"></i>
                                             </Link>
 
-                                            <button
-                                                className="btn btn-danger"
-                                                onClick={(e) => handleDelete(item._id)}
-                                            >
-                                                <i className="bi bi-trash-fill"></i>
-                                            </button>
+                                            <i className="bi bi-trash-fill text-danger" onClick={(e) => handleDelete(item._id)}></i>
                                         </td>
                                     </tr>
                                 );
@@ -86,7 +79,7 @@ const Employees = () => {
                         </tbody>
                     </table>
                 </div>
-            </AdminLayout>
+            </AdminLayout >
         </>
     );
 };

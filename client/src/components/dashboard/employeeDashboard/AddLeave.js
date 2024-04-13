@@ -6,7 +6,7 @@ import EmployeeLayout from "../../Layouts/EmployeeLayout";
 
 const AddLeave = () => {
   const { id } = useParams();
-  const [eid, setEID] = useState("");
+  const [eid, setEID] = useState("EMP04136495");
   const [reason, setReason] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -122,6 +122,9 @@ const AddLeave = () => {
                 )}
               </div>
               <div className="mb-3">
+                <label htmlFor="from" className="form-label">
+                  Leave type
+                </label>
                 <select
                   className={`form-select ${errors.type && "is-invalid"}`}
                   aria-label="Default select example"

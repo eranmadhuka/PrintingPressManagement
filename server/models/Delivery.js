@@ -32,4 +32,4 @@ const DeliverySchema = new mongoose.Schema({
   },
 });
 
-module.exports = Delivery = mongoose.model("Deliveries", DeliverySchema);
+module.exports = Delivery = mongoose.model("deliveries", DeliverySchema);

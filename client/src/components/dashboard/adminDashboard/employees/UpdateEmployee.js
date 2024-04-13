@@ -21,7 +21,7 @@ const UpdateEmployee = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/employee/getUser/" + id)
+      .get("http://localhost:5000/employees/getUser/" + id)
       .then((result) => {
         console.log(result);
         setfName(result.data.fname);

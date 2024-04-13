@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 const empLeaveSchema = new mongoose.Schema({
     eid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "employees",
+        type: String,
         required: true,
     },
     reason: {
@@ -33,4 +32,4 @@ const empLeaveSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("Leaves", empLeaveSchema);
+module.exports = mongoose.model("leaves", empLeaveSchema);

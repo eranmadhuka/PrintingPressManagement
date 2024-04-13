@@ -69,7 +69,7 @@ const AddEmployee = () => {
     }
 
     axios
-      .post("http://localhost:5000/employee/createEmp", {
+      .post("http://localhost:5000/employees/createEmp", {
         fname,
         lname,
         gender,
@@ -129,12 +129,16 @@ const AddEmployee = () => {
               <label htmlFor="gender" className="form-label">
                 Gender
               </label>
-              <input
-                type="text"
-                className="form-control"
+              <select
+                className="form-select"
                 id="gender"
                 onChange={(e) => setGender(e.target.value)}
-              />
+              >
+                <option selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
               {errors.gender && (
                 <div className="text-danger">{errors.gender}</div>
               )}
