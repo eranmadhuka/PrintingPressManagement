@@ -13,6 +13,8 @@ import Register from './pages/Register';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 import TellUsMore from './pages/TellUsMore';
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Checkout from './pages/Checkout';
 
 function PublicLayout() {
@@ -27,6 +29,8 @@ function PublicLayout() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/resetpassword/:token" element={<ResetPassword />} />
 
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/tell-us-more" element={<TellUsMore />} />

@@ -13,14 +13,23 @@ import Customers from '../dashboard/adminDashboard/customers/Customers';
 import Inventory from '../dashboard/adminDashboard/inventory/Inventory';
 
 import Suppliers from '../dashboard/adminDashboard/suppliers/Suppliers';
+import AddSupliers from "../dashboard/adminDashboard/suppliers/AddSupliers";
+import UpdateSupplier from "../dashboard/adminDashboard/suppliers/UpdateSupplier";
+import PlaceOrder from "../dashboard/adminDashboard/suppliers/PlaceOrder";
+import RawMaterials from "../dashboard/adminDashboard/suppliers/RawMaterials";
+import UpdateOrder from "../dashboard/adminDashboard/suppliers/updateOrder";
 
 import Vehicles from '../dashboard/adminDashboard/transport/Vehicles';
 import Delivery from '../dashboard/adminDashboard/transport/Delivery';
+import UpdateVehicle from "../dashboard/adminDashboard/transport/UpdateVehicle";
+import UpdateDelivery from "../dashboard/adminDashboard/transport/UpdateDelivery";
+import AddNewVehicle from "../dashboard/adminDashboard/transport/AddNewVehicle";
 
 import Employees from '../dashboard/adminDashboard/employees/Employees';
 import Leaves from '../dashboard/adminDashboard/employees/Leaves';
 import Attendance from '../dashboard/adminDashboard/employees/Attendance';
-import Departments from '../dashboard/adminDashboard/employees/Departments';
+import AddEmployee from "../dashboard/adminDashboard/employees/AddEmployee";
+import UpdateEmployee from "../dashboard/adminDashboard/employees/UpdateEmployee";
 
 import LostProfit from '../dashboard/adminDashboard/financial/LostProfit';
 import Salaries from '../dashboard/adminDashboard/financial/Salaries';
@@ -48,17 +57,32 @@ const AdminRoutes = () => {
 
             {/* Suppliers Routes */}
             <Route path="/suppliers" element={<Suppliers />} />
-            {/* <Route path="/materials" element={<Dashboard />} /> */}
+            <Route path="/suppliers/add-spplier" element={<AddSupliers />} />
+            <Route
+                path="/suppliers/updatesupplier/:id"
+                element={<UpdateSupplier />}
+            />
+            <Route path="/suppliers/place-order" element={<PlaceOrder />} />
+            <Route path="/suppliers/raw-materials" element={<RawMaterials />} />
+            <Route path="/suppliers/update-orders/:id" element={<UpdateOrder />} />
+            <Route path="/suppliers/add-orders" element={<PlaceOrder />} />
 
             {/* Transport Routes */}
             <Route path="/transport/vehicles" element={<Vehicles />} />
             <Route path="/transport/delivery" element={<Delivery />} />
+            <Route path="/transport/updateVehicle/:id" element={<UpdateVehicle />} />
+            <Route path="/transport/addNewVehicle" element={<AddNewVehicle />} />
+            <Route path="/transport/updateDelivery" element={<UpdateDelivery />} />
 
             {/* Employees Routes */}
             <Route path="/employees" element={<Employees />} />
             <Route path="/employees/leaves" element={<Leaves />} />
             <Route path="/employees/attendance" element={<Attendance />} />
-            <Route path="/employees/departments" element={<Departments />} />
+            <Route path="/employees/AddEmployee" element={<AddEmployee />} />
+            <Route
+                path="/employees/UpdateEmployee/:id"
+                element={<UpdateEmployee />}
+            />
 
             {/* Financial Routes */}
             <Route path="/financial/lostProfit" element={<LostProfit />} />

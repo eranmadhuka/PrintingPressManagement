@@ -19,7 +19,7 @@ const AdminLayout = ({ children }) => {
                         <ul className="list-unstyled ps-0">
                             {/* Dashboard */}
                             <li className={`mb-1 nav-item border-bottom ${location.pathname === '/admin' ? 'active' : ''}`}>
-                                <Link to="/admin" className='text-decoration-none d-block nav-link  p-3'>
+                                <Link to="/admin" className='text-decoration-none d-block nav-link p-3'>
                                     <i className="bi bi-cart-check me-2"></i>
                                     Dashboard
                                 </Link>
@@ -109,9 +109,12 @@ const AdminLayout = ({ children }) => {
                             </li>
 
                             {/* Suplliers collapse */}
-                            <li className={`mb-1 nav-item border-bottom ${location.pathname.includes('/admin/suppliers') ? 'active' : ''}`}>
+                            <li
+                                className={`mb-1 nav-item border-bottom ${location.pathname.includes("/admin/suppliers") ? "active" : ""
+                                    }`}
+                            >
                                 <Link
-                                    className='text-decoration-none d-block nav-link  p-3'
+                                    className="text-decoration-none d-block nav-link  p-3"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#Suplliers-collapse"
                                     aria-expanded="false"
@@ -121,16 +124,48 @@ const AdminLayout = ({ children }) => {
                                 <div className="collapse" id="Suplliers-collapse">
                                     <ul className="btn-toggle-nav list-unstyled  pb-1 small">
                                         <li>
-                                            <Link to="/admin/suppliers" className='link-body-emphasis d-inline-flex text-decoration-none rounded'>All Suppliers</Link>
+                                            <Link
+                                                to="/admin/suppliers"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                All Suppliers
+                                            </Link>
+                                        </li>
+                                        {/* <li>
+                                            <Link
+                                                to="/admin/suppliers/add-spplier"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Add Suppliers
+                                            </Link>
+                                        </li> */}
+                                        <li>
+                                            <Link
+                                                to="/admin/suppliers/raw-materials"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Raw Materials
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link
+                                                to="/admin/suppliers/place-order"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Place Order
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
 
                             {/* Transport collapse */}
-                            <li className={`mb-1 nav-item border-bottom ${location.pathname.includes('/admin/transport') ? 'active' : ''}`}>
+                            <li
+                                className={`mb-1 nav-item border-bottom ${location.pathname.includes("/admin/transport") ? "active" : ""
+                                    }`}
+                            >
                                 <Link
-                                    className='text-decoration-none d-block nav-link  p-3'
+                                    className="text-decoration-none d-block nav-link  p-3"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#Transport-collapse"
                                     aria-expanded="false"
@@ -140,19 +175,40 @@ const AdminLayout = ({ children }) => {
                                 <div className="collapse" id="Transport-collapse">
                                     <ul className="btn-toggle-nav list-unstyled  pb-1 small">
                                         <li>
-                                            <Link to="/admin/transport/vehicles" className='link-body-emphasis d-inline-flex text-decoration-none rounded'>All Vehicles</Link>
+                                            <Link
+                                                to="/admin/transport/vehicles"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                All Vehicles
+                                            </Link>
                                         </li>
                                         <li>
-                                            <Link to="/admin/transport/delivery" className='link-body-emphasis d-inline-flex text-decoration-none rounded'>Delivery</Link>
+                                            <Link
+                                                to="/admin/transport/delivery"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Delivery
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link
+                                                to="/admin/transport/UpdateDelivery"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Add Delivery
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
 
                             {/* Employee collapse */}
-                            <li className={`mb-1 nav-item border-bottom ${location.pathname.includes('/admin/employees') ? 'active' : ''}`}>
+                            <li
+                                className={`mb-1 nav-item border-bottom ${location.pathname.includes("/admin/employees") ? "active" : ""
+                                    }`}
+                            >
                                 <Link
-                                    className='text-decoration-none d-block nav-link  p-3'
+                                    className="text-decoration-none d-block nav-link  p-3"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#Employee-collapse"
                                     aria-expanded="false"
@@ -162,17 +218,45 @@ const AdminLayout = ({ children }) => {
                                 <div className="collapse" id="Employee-collapse">
                                     <ul className="btn-toggle-nav list-unstyled  pb-1 small">
                                         <li>
-                                            <Link to="/admin/employees" className='link-body-emphasis d-inline-flex text-decoration-none rounded'>All Employees</Link>
+                                            <Link
+                                                to="/admin/employees"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                All Employees
+                                            </Link>
+                                        </li>
+                                        {/* <li>
+                                            <Link
+                                                to="/admin/employees/AddEmployee"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Add Employee
+                                            </Link>
+                                        </li> */}
+                                        <li>
+                                            <Link
+                                                to="/admin/employees/leaves"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Leaves
+                                            </Link>
                                         </li>
                                         <li>
-                                            <Link to="/admin/employees/leaves" className='link-body-emphasis d-inline-flex text-decoration-none rounded'>Leaves</Link>
+                                            <Link
+                                                to="/admin/employees/attendance"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Attendance
+                                            </Link>
                                         </li>
-                                        <li>
-                                            <Link to="/admin/employees/attendance" className='link-body-emphasis d-inline-flex text-decoration-none rounded'>Attendance</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/admin/employees/departments" className='link-body-emphasis d-inline-flex text-decoration-none rounded'>Departments</Link>
-                                        </li>
+                                        {/* <li>
+                                            <Link
+                                                to="/admin/employees/departments"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Departments
+                                            </Link>
+                                        </li> */}
                                     </ul>
                                 </div>
                             </li>
