@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 const multer = require("multer");
-app.use("/files", express.static("files"));
+app.use("/files", express.static("files")); //update this line on main index & create "files" folder in main server
 
 // Import routes
 // const customerRoutes = require('./routes/customerRoutes');
