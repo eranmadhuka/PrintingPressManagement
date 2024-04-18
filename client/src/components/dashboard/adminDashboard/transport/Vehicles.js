@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import AdminLayout from "../../../Layouts/AdminLayout";
+import Swal from "sweetalert2";
 
 const Vehicles = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -27,13 +28,38 @@ const Vehicles = () => {
   );
 
   const handleDelete = (id) => {
-    axios
-      .delete("http://localhost:5000/deleteVehicle/" + id)
-      .then((res) => {
-        console.log(res);
-        window.location.reload();
-      })
-      .catch((err) => console.log(err));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:5000/deleteVehicle/${id}`)
+          .then((res) => {
+            console.log(res);
+            Swal.fire({
+              title: "Deleted!",
+              text: "The vehicle has been deleted.",
+              icon: "success",
+            });
+            // Consider handling the UI update here instead of reloading.
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.error(err);
+            Swal.fire({
+              title: "Failed to Delete",
+              text: "There was a problem deleting the vehicle. Please try again later.",
+              icon: "error",
+            });
+          });
+      }
+    });
   };
 
   // Construct URL for documents

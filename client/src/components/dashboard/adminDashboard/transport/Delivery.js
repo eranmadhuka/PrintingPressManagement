@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
 
 const Delivery = () => {
   const [delivery, setDelivery] = useState([]);
@@ -41,41 +42,72 @@ const Delivery = () => {
     setContactDriversSearchQuery(e.target.value);
   };
 
-  // Function to update Product Status
   const updateProductStatus = async (newStatus, id) => {
     try {
       const response = await axios.put(
         `http://localhost:5000/api/deliveries/${id}`,
-        { productStatus: newStatus } // Updated to match backend property name
+        { productStatus: newStatus }
       );
-      console.log(response.data);
-      alert("Product status updated successfully!");
 
-      // Re-fetch delivery data after successful update
+      Swal.fire("Success", "Product status updated successfully!", "success");
+
       const updatedDelivery = await axios.get(
         "http://localhost:5000/api/deliveries/"
       );
       setDelivery(updatedDelivery.data);
     } catch (error) {
-      console.error("Error updating product status:", error);
-      alert("Failed to update product status. Please try again.");
+      Swal.fire(
+        "Error",
+        "Failed to update product status. Please try again.",
+        "error"
+      );
     }
   };
 
   const exportToExcel = () => {
-    // Creating a new workbook
     const workbook = XLSX.utils.book_new();
-
-    // Convert delivery data array to a worksheet
     const worksheet = XLSX.utils.json_to_sheet(delivery);
-
-    // Append the worksheet to the workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Deliveries");
-
-    // Generate an Excel file and trigger download
     XLSX.writeFile(workbook, "DeliveryData.xlsx");
   };
+  const clearDeliveredData = async () => {
+    try {
+      const result = await Swal.fire({
+        title: "Confirm",
+        text: "Make sure you have a table report. Do you want to continue?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      });
 
+      if (result.isConfirmed) {
+        const response = await axios.delete(
+          "http://localhost:5000/api/deliveries/"
+        );
+        console.log(response.data);
+
+        // Refresh the delivery data in the state after deletion
+        const updatedDelivery = await axios.get(
+          "http://localhost:5000/api/deliveries/"
+        );
+        setDelivery(updatedDelivery.data);
+
+        Swal.fire(
+          "Success",
+          "Delivered items have been successfully deleted.",
+          "success"
+        );
+      }
+    } catch (error) {
+      console.error("Failed to delete delivered items:", error);
+      Swal.fire(
+        "Error",
+        "Error deleting delivered items. Please try again later.",
+        "error"
+      );
+    }
+  };
   return (
     <AdminLayout>
       <div className="bg-white p-3 mt-2">
@@ -92,12 +124,20 @@ const Delivery = () => {
               onChange={handleDeliverySearchChange}
             />
           </form>
-          <button className="btn btn-success" onClick={exportToExcel}>
-            Export to Excel
-          </button>
-          <a href="../transport/UpdateDelivery" className="btn btn-primary">
-            + Add Delivery
-          </a>
+          <div>
+            <button
+              className="btn btn-warning me-2"
+              onClick={clearDeliveredData}
+            >
+              Clear Delivered
+            </button>
+            <button className="btn btn-success me-2" onClick={exportToExcel}>
+              Export to Excel
+            </button>
+            <a href="../transport/UpdateDelivery" className="btn btn-primary">
+              + Add Delivery
+            </a>
+          </div>
         </div>
 
         <table className="table">

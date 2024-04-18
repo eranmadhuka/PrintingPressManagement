@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const CreateDelivery = () => {
   const [driverId, setDriverId] = useState("");
@@ -91,12 +92,14 @@ const CreateDelivery = () => {
           "http://localhost:5000/api/deliveries/",
           deliveryData
         );
-        console.log(response.data);
-        alert("Delivery added successfully!");
+        Swal.fire("Success", "Delivery added successfully!", "success");
         navigate("/admin/transport/delivery");
       } catch (error) {
-        console.error("Error adding delivery:", error);
-        alert("Failed to add delivery. Please try again.");
+        Swal.fire(
+          "Error",
+          "Failed to add delivery. Please try again.",
+          "error"
+        );
       }
     }
   };
