@@ -1,33 +1,34 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomerLayout from "../../Layouts/CustomerLayout";
-// import proImg from "../../../assets/images/9434619.jpg";
-// import "./customer.css";
-// import axios from "axios";
+import "./customer.css";
+import axios from "axios";
+import { useAuthContext } from "../../../hooks/useAuthContext";
+import Swal from "sweetalert2";
 
 const LogoutPage = () => {
   const [showModal, setShowModal] = useState(false);
-
+  const { user } = useAuthContext;
   const handleModalClose = () => {
     setShowModal(false);
   };
 
-  // const Navigate = useNavigate();
-  /*axios.defaults.withCredentials = true;*/
+  const Navigate = useNavigate();
+  const { dispatch } = useAuthContext();
   const handleLogout = () => {
-    /*axios
-      .get("http://localhost:5000/auth/logout")
-      .then((res) => {
-        if (res.data.status) {
-          Navigate("/login");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });*/
-    setShowModal(true); // Show confirmation modal
+    try {
+      localStorage.removeItem("token");
+      dispatch({ type: "LOGOUT" });
+      setShowModal(true);
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Logout successfully!",
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
-
   return (
     <CustomerLayout>
       <div>
@@ -41,9 +42,14 @@ const LogoutPage = () => {
               <p className="card-text">
                 You will be logged out of your account.
               </p>
-              <button className="btn btn-primary" onClick={handleLogout}>
-                Logout
-              </button>
+              {user && (
+                <div>
+                  <span>{user.email}</span>
+                  <button className="btn btn-primary" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </div>
+              )}
               <Link to="/" className="btn btn-secondary ms-2">
                 Cancel
               </Link>

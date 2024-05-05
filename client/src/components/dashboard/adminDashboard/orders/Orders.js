@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import AdminLayout from '../../../Layouts/AdminLayout'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import AdminLayout from '../../../Layouts/AdminLayout';
+import axios from 'axios';
+import * as XLSX from "xlsx";
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         axios.get('http://localhost:5000/orders')
@@ -15,7 +17,6 @@ const Orders = () => {
     // Function to handle click event on order row
     const handleOrderClick = (order) => {
         setSelectedOrder(order);
-        console.log(selectedOrder);
     };
 
     // Function to handle status update
@@ -34,21 +35,40 @@ const Orders = () => {
             .catch(error => console.error('Error updating order status:', error));
     };
 
+    const filteredOrders = orders.filter(
+        (item) =>
+            item.orderID.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
-    console.log(selectedOrder);
+    const handleExport = () => {
+        const ws = XLSX.utils.json_to_sheet(orders);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Orders");
+        XLSX.writeFile(wb, "orders.xlsx");
+    };
+
     return (
         <AdminLayout>
             <div className="bg-white p-3 mt-2">
                 <h3 className='fs-5 fw-bold'>All Orders</h3>
                 <div className="d-flex align-items-center justify-content-between border-bottom py-3">
                     <form className="d-flex" role="search">
-                        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                        <input
+                            className="form-control me-2"
+                            type="search"
+                            placeholder="Search by Order ID"
+                            aria-label="Search"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </form>
-                    {/* <button className='btn btn-primary'>+ Add Order</button> */}
+                    <button className="btn btn-success ms-2" onClick={handleExport}>
+                        Export to Excel
+                    </button>
                 </div>
                 {/* Table */}
                 <div className='mt-3 px-2'>
-                    <table className="table table-hover">
+                    <table id="order-table" className="table table-hover">
                         <thead>
                             <tr className='table-light'>
                                 <th scope="col">Order ID</th>
@@ -61,12 +81,13 @@ const Orders = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map((order) => (
+                            {filteredOrders.map((order) => (
                                 <tr key={order._id}>
-                                    {/*  */}
-                                    <td>{order.products.length > 0 ? order.products[0]._id : 'N/A'}</td>
-                                    <td>{order.createdAt}</td>
-                                    <td>{order.products[0].price}</td>
+                                    <td>{order.orderID}</td>
+                                    <td>{order.customer}</td>
+                                    <td>{order.products.product}</td>
+                                    <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                                    <td>{order.products.price}</td>
                                     <td>
                                         <select
                                             className='form-select'
@@ -78,7 +99,6 @@ const Orders = () => {
                                             <option value="Delivered">Delivered</option>
                                         </select>
                                     </td>
-                                    <td>{order.status}</td>
                                     <td>
                                         <button onClick={() => handleOrderClick(order)} type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                             <i className="bi bi-eye"></i>
@@ -104,7 +124,7 @@ const Orders = () => {
                                     <p> Date: <strong>{selectedOrder.createdAt}</strong></p>
                                     {/* Customer Details */}
                                     <h4 className='fw-bold'>Customer Details</h4>
-                                    <p>Customer Name: {selectedOrder.customer}</p> {/* Access customer details */}
+                                    <p>Customer Name: {selectedOrder.customer}</p>
                                     <p>Email: {selectedOrder.customer.email}</p>
                                     <p>Phone Number: {selectedOrder.customer.phoneNumber}</p>
 
@@ -119,21 +139,18 @@ const Orders = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {selectedOrder.products.map((product) => (
-                                                <tr key={product._id}>
-                                                    <td>{product.product.name}</td>
-                                                    <td>{product.quantity}</td>
-                                                    <td>${product.price}</td>
-                                                </tr>
-                                            ))}
+                                            <tr>
+                                                <td>{selectedOrder.products.product.name}</td>
+                                                <td>{selectedOrder.products.quantity}</td>
+                                                <td>${selectedOrder.products.price}</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                     {/* Order Details */}
                                     <h4 className='fw-bold'>Order Details</h4>
                                     <p>Status: {selectedOrder.status}</p>
                                     <p>Order Date: {selectedOrder.createdAt}</p>
-                                    {/* Calculate total amount */}
-                                    <p>Total Amount: ${selectedOrder.products.reduce((total, product) => total + (product.quantity * product.price), 0)}</p>
+                                    <p>Total Amount: ${selectedOrder.products.quantity * selectedOrder.products.price}</p>
                                 </>
                             )}
                         </div>

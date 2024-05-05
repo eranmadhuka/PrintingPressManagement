@@ -8,7 +8,8 @@ import Refunds from '../dashboard/adminDashboard/orders/Refunds';
 import Products from '../dashboard/adminDashboard/products/Products';
 import Categories from '../dashboard/adminDashboard/products/Categories';
 
-import Customers from '../dashboard/adminDashboard/customers/Customers';
+import Customers from "../dashboard/adminDashboard/customers/Customers";
+import FeedbackManagement from "../dashboard/adminDashboard/customers/FeedbackManagement";
 
 import Inventory from '../dashboard/adminDashboard/inventory/Inventory';
 
@@ -31,9 +32,17 @@ import Attendance from '../dashboard/adminDashboard/employees/Attendance';
 import AddEmployee from "../dashboard/adminDashboard/employees/AddEmployee";
 import UpdateEmployee from "../dashboard/adminDashboard/employees/UpdateEmployee";
 
-import LostProfit from '../dashboard/adminDashboard/financial/LostProfit';
-import Salaries from '../dashboard/adminDashboard/financial/Salaries';
-import Incomes from '../dashboard/adminDashboard/financial/Incomes';
+import LostProfit from "../dashboard/adminDashboard/financial/LostProfit";
+import Salaries from "../dashboard/adminDashboard/financial/Salaries";
+import Incomes from "../dashboard/adminDashboard/financial/Incomes";
+import AddEnries from "../dashboard/adminDashboard/financial/AddEnries";
+import EmployeeForm from "../dashboard/adminDashboard/financial/EmployeeForm";
+import UpdateEntries from "../dashboard/adminDashboard/financial/UpdateEntry";
+import IncomedetailsForm from "../dashboard/adminDashboard/financial/IncomedetailsForm";
+
+import AddProduct from '../dashboard/adminDashboard/products/AddProduct';
+import UpdateProduct from '../dashboard/adminDashboard/products/UpdateProduct';
+// import ProductDetail from '../../pages/ProductDetail';
 
 const AdminRoutes = () => {
     return (
@@ -48,9 +57,12 @@ const AdminRoutes = () => {
             {/* Products Routes */}
             <Route path="/products" element={<Products />} />
             <Route path="/products/categories" element={<Categories />} />
+            <Route path="/products/addProduct" element={<AddProduct />} />
+            <Route path="/products/updateProduct/:id" element={<UpdateProduct />} />
 
             {/* Customers Routes */}
             <Route path="/customers" element={<Customers />} />
+            <Route path="/feedbackmanagement" element={<FeedbackManagement />} />
 
             {/* Inventory Routes */}
             <Route path="/inventory" element={<Inventory />} />
@@ -87,7 +99,11 @@ const AdminRoutes = () => {
             {/* Financial Routes */}
             <Route path="/financial/lostProfit" element={<LostProfit />} />
             <Route path="/financial/salaries" element={<Salaries />} />
+            <Route path="/financial/updatentry/:id" element={<UpdateEntries />} />
             <Route path="/financial/incomes" element={<Incomes />} />
+            <Route path="/financial/entry" element={<AddEnries />} />
+            <Route path="/financial/emForm/:id" element={<EmployeeForm />} />
+            <Route path="/financial/updateIncome/:id" element={<IncomedetailsForm />} />
 
         </Routes>
     );

@@ -2,187 +2,343 @@ import React, { useState, useEffect } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
+import PieChart from "../../../charts/PieChart"; // Import the PieChart component
 
 const Delivery = () => {
-    const [delivery, setDelivery] = useState([]);
-    const [deliverySearchQuery, setDeliverySearchQuery] = useState("");
-    const [contactDrivers, setContactDrivers] = useState([
-        { DriverId: 1, DriverName: "John Doe", Contactnumber: "123-456-7890" },
-        { DriverId: 2, DriverName: "Jane Smith", Contactnumber: "987-654-3210" },
-        {
-            DriverId: 3,
-            DriverName: "Michael Johnson",
-            Contactnumber: "456-789-0123",
-        },
-    ]);
-    const [contactDriversSearchQuery, setContactDriversSearchQuery] =
-        useState("");
+  const [delivery, setDelivery] = useState([]);
+  const [deliverySearchQuery, setDeliverySearchQuery] = useState("");
+  const [productStatusDataForPieChart, setProductStatusDataForPieChart] =
+    useState([]);
+  const [contactDrivers, setContactDrivers] = useState([]);
+  const [contactDriversSearchQuery, setContactDriversSearchQuery] =
+    useState("");
 
-    useEffect(() => {
-        const fetchDeliveryData = async () => {
-            try {
-                const deliveryResponse = await axios.get(
-                    "http://localhost:5000/api/deliveries/"
-                );
-                setDelivery(deliveryResponse.data);
-            } catch (error) {
-                console.error("Error fetching delivery data:", error);
-            }
-        };
+  const [filteredDelivery, setFilteredDelivery] = useState([]);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [driverMessages, setDriverMessages] = useState([]);
+  const [latestMessage, setLatestMessage] = useState("");
 
-        fetchDeliveryData();
-    }, []);
-
-    const handleDeliverySearchChange = (e) => {
-        setDeliverySearchQuery(e.target.value);
+  useEffect(() => {
+    const fetchDeliveryData = async () => {
+      try {
+        const deliveryResponse = await axios.get(
+          "http://localhost:5000/api/deliveries/"
+        );
+        setDelivery(deliveryResponse.data);
+        prepareProductStatusDataForPieChart(deliveryResponse.data);
+      } catch (error) {
+        console.error("Error fetching delivery data:", error);
+      }
     };
 
-    const handleContactDriversSearchChange = (e) => {
-        setContactDriversSearchQuery(e.target.value);
+    fetchDeliveryData();
+  }, []);
+
+  useEffect(() => {
+    setFilteredDelivery(delivery);
+  }, [delivery]);
+
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/employees/drivers/details"
+        );
+        setContactDrivers(response.data);
+      } catch (error) {
+        console.error("Error fetching drivers:", error);
+      }
     };
 
-    // Function to update Product Status
-    const updateProductStatus = async (newStatus, id) => {
-        try {
-            const response = await axios.put(
-                `http://localhost:5000/api/deliveries/${id}`,
-                { productStatus: newStatus } // Updated to match backend property name
-            );
-            console.log(response.data);
-            alert("Product status updated successfully!");
+    fetchDrivers();
+  }, []);
 
-            // Re-fetch delivery data after successful update
-            const updatedDelivery = await axios.get(
-                "http://localhost:5000/api/deliveries/"
-            );
-            setDelivery(updatedDelivery.data);
-        } catch (error) {
-            console.error("Error updating product status:", error);
-            alert("Failed to update product status. Please try again.");
-        }
-    };
+  const prepareProductStatusDataForPieChart = (data) => {
+    const productStatusCounts = {};
+    data.forEach((deliveryItem) => {
+      const { productStatus } = deliveryItem;
+      if (productStatus in productStatusCounts) {
+        productStatusCounts[productStatus]++;
+      } else {
+        productStatusCounts[productStatus] = 1;
+      }
+    });
+    const formattedData = Object.keys(productStatusCounts).map((status) => ({
+      type: status,
+      count: productStatusCounts[status],
+    }));
+    setProductStatusDataForPieChart(formattedData);
+  };
 
-    const exportToExcel = () => {
-        // Creating a new workbook
-        const workbook = XLSX.utils.book_new();
+  const handleDeliverySearchChange = (e) => {
+    setDeliverySearchQuery(e.target.value);
+    if (e.target.value === "") {
+      setFilteredDelivery(delivery);
+    } else {
+      const filteredData = delivery.filter(
+        (item) =>
+          item.driverId.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          item.vehicleId.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          item.productId.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          item.customerId.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setFilteredDelivery(filteredData);
+    }
+  };
 
-        // Convert delivery data array to a worksheet
-        const worksheet = XLSX.utils.json_to_sheet(delivery);
+  const handleContactDriversSearchChange = (e) => {
+    setContactDriversSearchQuery(e.target.value);
+  };
 
-        // Append the worksheet to the workbook
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Deliveries");
+  const updateProductStatus = async (newStatus, id) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/deliveries/${id}`,
+        { productStatus: newStatus }
+      );
 
-        // Generate an Excel file and trigger download
-        XLSX.writeFile(workbook, "DeliveryData.xlsx");
-    };
+      Swal.fire("Success", "Product status updated successfully!", "success");
 
-    return (
-        <AdminLayout>
-            <div className="bg-white p-3 mt-2">
-                <h3 className="fs-5 fw-bold">Transportation</h3>
+      const updatedDelivery = await axios.get(
+        "http://localhost:5000/api/deliveries/"
+      );
+      setDelivery(updatedDelivery.data);
+      prepareProductStatusDataForPieChart(updatedDelivery.data);
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        "Failed to update product status. Please try again.",
+        "error"
+      );
+    }
+  };
 
-                <div className="d-flex align-items-center justify-content-between border-bottom py-3">
-                    <form className="d-flex" role="search">
-                        <input
-                            className="form-control me-2"
-                            type="search"
-                            placeholder="Search Deliveries"
-                            aria-label="Search"
-                            value={deliverySearchQuery}
-                            onChange={handleDeliverySearchChange}
-                        />
-                    </form>
-                    <button className="btn btn-success" onClick={exportToExcel}>
-                        Export to Excel
-                    </button>
-                    <a href="../transport/UpdateDelivery" className="btn btn-primary">
-                        + Add Delivery
-                    </a>
-                </div>
+  const exportToExcel = () => {
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(delivery);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Deliveries");
+    XLSX.writeFile(workbook, "DeliveryData.xlsx");
+  };
 
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Driver Id</th>
-                            <th scope="col">Vehicle Id</th>
-                            <th scope="col">Product Id</th>
-                            <th scope="col">Customer Id</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">Product status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {delivery.map((item, index) => (
-                            <tr key={index}>
-                                <th scope="row">{index + 1}</th>
-                                <td>{item.driverId}</td>
-                                <td>{item.vehicleId}</td>
-                                <td>{item.productId}</td>
-                                <td>{item.customerId}</td>
-                                <td>{item.address}</td>
-                                <td>
-                                    <div className="form-floating">
-                                        <select
-                                            className="form-select"
-                                            id={`productStatus${index}`}
-                                            aria-label="Floating label select example"
-                                            value={item.productStatus}
-                                            onChange={(e) =>
-                                                updateProductStatus(e.target.value, item._id)
-                                            }
-                                        >
-                                            <option value="Pending Delivery">Pending Delivery</option>
-                                            <option value="In Transit">In Transit</option>
-                                            <option value="Delivered">Delivered</option>
-                                        </select>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+  const clearDeliveredData = async () => {
+    try {
+      const result = await Swal.fire({
+        title: "Confirm",
+        text: "Make sure you have a table report. Do you want to continue?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      });
+
+      if (result.isConfirmed) {
+        const response = await axios.delete(
+          "http://localhost:5000/api/deliveries/"
+        );
+
+        // Refresh the delivery data in the state after deletion
+        const updatedDelivery = await axios.get(
+          "http://localhost:5000/api/deliveries/"
+        );
+        setDelivery(updatedDelivery.data);
+        prepareProductStatusDataForPieChart(updatedDelivery.data);
+
+        Swal.fire(
+          "Success",
+          "Delivered items have been successfully deleted.",
+          "success"
+        );
+      }
+    } catch (error) {
+      console.error("Failed to delete delivered items:", error);
+      Swal.fire(
+        "Error",
+        "Error deleting delivered items. Please try again later.",
+        "error"
+      );
+    }
+  };
+
+  const openPopup = async (driver) => {
+    setSelectedDriver(driver);
+    try {
+      const response = await axios.get("/api/latestmessage", {
+        params: { employeeId: driver._id },
+      });
+      console.log("Latest message response:", response.data);
+      setLatestMessage(response.data.text);
+    } catch (error) {
+      console.error("Error fetching latest message:", error);
+    }
+  };
+
+  // Function to close pop-up
+  const closePopup = () => {
+    setSelectedDriver(null);
+    setDriverMessages([]);
+  };
+
+  return (
+    <AdminLayout>
+      <div className="bg-white p-3 mt-2">
+        <h3 className="fs-5 fw-bold">Transportation</h3>
+
+        <div className="d-flex align-items-center justify-content-between border-bottom py-3">
+          <form className="d-flex" role="search">
+            <input
+              className="form-control me-2"
+              type="search"
+              placeholder="Search Deliveries"
+              aria-label="Search"
+              value={deliverySearchQuery}
+              onChange={handleDeliverySearchChange}
+            />
+          </form>
+          <div>
+            <button
+              className="btn btn-warning me-2"
+              onClick={clearDeliveredData}
+            >
+              Clear Delivered
+            </button>
+            <button className="btn btn-success me-2" onClick={exportToExcel}>
+              Export to Excel
+            </button>
+            <a href="../transport/UpdateDelivery" className="btn btn-primary">
+              + Add Delivery
+            </a>
+          </div>
+        </div>
+
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Driver Id</th>
+              <th scope="col">Vehicle Id</th>
+              <th scope="col">Product Id</th>
+              <th scope="col">Customer Id</th>
+              <th scope="col">Address</th>
+              <th scope="col">Product status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredDelivery.map((item, index) => (
+              <tr key={index}>
+                <th scope="row">{index + 1}</th>
+                <td>{item.employeeId}</td>
+                <td>{item.vehicleId}</td>
+                <td>{item.productId}</td>
+                <td>{item.customerId}</td>
+                <td>{item.address}</td>
+                <td>
+                  <div className="form-floating">
+                    <select
+                      className="form-select"
+                      id={`productStatus${index}`}
+                      aria-label="Floating label select example"
+                      value={item.productStatus}
+                      onChange={(e) =>
+                        updateProductStatus(e.target.value, item._id)
+                      }
+                    >
+                      <option value="Pending Delivery">Pending Delivery</option>
+                      <option value="In Transit">In Transit</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Contact Drivers Table and Product Status Distribution Pie Chart */}
+      <div
+        className="bg-white p-3 mt-5 d-flex"
+        style={{ justifyContent: "space-between" }}
+      >
+        {/* Contact Drivers Table */}
+        <div style={{ width: "48%" }}>
+          {" "}
+          {/* Adjusted width */}
+          <h3 className="fs-5 fw-bold">Contact Drivers</h3>
+          <div className="d-flex align-items-center justify-content-between border-bottom py-3">
+            <form className="d-flex" role="search">
+              <input
+                className="form-control me-2"
+                type="search"
+                placeholder="Search Drivers"
+                aria-label="Search"
+                value={contactDriversSearchQuery}
+                onChange={handleContactDriversSearchChange}
+              />
+            </form>
+          </div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Employee ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Messages</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contactDrivers.map((driver, index) => (
+                <tr key={index}>
+                  <th scope="row">{index + 1}</th>
+                  <td>{driver._id}</td>
+                  <td>{`${driver.fname} ${driver.lname}`}</td>
+                  <td>{driver.phone}</td>
+                  <td>
+                    <td>
+                      <button
+                        className="btn btn-outline-success"
+                        onClick={() => openPopup(driver)}
+                      >
+                        View
+                      </button>
+                    </td>{" "}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {selectedDriver && (
+          <div className="popup">
+            <div className="popup-inner">
+              <h2>Message</h2>
+
+              <p>Name: {`${selectedDriver.fname} ${selectedDriver.lname}`}</p>
+
+              <ul>
+                {driverMessages.map((message, index) => (
+                  <li key={index}>{message.text}</li>
+                ))}
+              </ul>
+              <button onClick={closePopup}>Close</button>
             </div>
-
-            <div className="bg-white p-3 mt-5">
-                <h3 className="fs-5 fw-bold">Contact Drivers</h3>
-
-                <div className="d-flex align-items-center justify-content-between border-bottom py-3">
-                    <form className="d-flex" role="search">
-                        <input
-                            className="form-control me-2"
-                            type="search"
-                            placeholder="Search Drivers"
-                            aria-label="Search"
-                            value={contactDriversSearchQuery}
-                            onChange={handleContactDriversSearchChange}
-                        />
-                    </form>
-                </div>
-
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Driver Id</th>
-                            <th scope="col">Driver Name</th>
-                            <th scope="col">Contact</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {contactDrivers.map((driver, index) => (
-                            <tr key={index}>
-                                <th scope="row">{index + 1}</th>
-                                <td>{driver.DriverId}</td>
-                                <td>{driver.DriverName}</td>
-                                <td>{driver.Contactnumber}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+          </div>
+        )}
+        {/* Product Status Distribution Pie Chart */}
+        <div style={{ width: "48%" }}>
+          {" "}
+          {/* Adjusted width */}
+          <div className="bg-white p-3">
+            <h3 className="fs-5 fw-bold">Product Status Distribution</h3>
+            <div className="mt-3 px-2">
+              <PieChart data={productStatusDataForPieChart} />
             </div>
-        </AdminLayout>
-    );
+          </div>
+        </div>
+      </div>
+    </AdminLayout>
+  );
 };
 
 export default Delivery;

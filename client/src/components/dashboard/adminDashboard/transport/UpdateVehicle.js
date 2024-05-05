@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UpdateVehicle = () => {
   const { id } = useParams();
@@ -85,13 +86,15 @@ const UpdateVehicle = () => {
       axios
         .put(`http://localhost:5000/updateVehicle/` + id, updatedVehicle)
         .then((response) => {
-          console.log("Update successful: ", response.data);
-          alert("Vehicle updated successfully!");
+          Swal.fire("Success", `Vehicle updated successfully`, "success");
           navigate("/admin/transport/vehicles");
         })
         .catch((error) => {
-          console.error("Update failed: ", error);
-          alert("Failed to update vehicle. Please try again.");
+          Swal.fire(
+            "Error",
+            "Failed to update vehicle. Please try again.",
+            "error"
+          );
         });
     }
   };

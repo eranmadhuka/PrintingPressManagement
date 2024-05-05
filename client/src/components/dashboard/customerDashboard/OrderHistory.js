@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import CustomerLayout from '../../Layouts/CustomerLayout'
 import axios from 'axios'
+import { Link } from "react-router-dom";
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
@@ -27,6 +28,16 @@ const OrderHistory = () => {
         }
     };
 
+    const handleDelete = (id) => {
+        axios
+            .delete("http://localhost:5000/orders/deleteOrder/" + id)
+            .then((res) => {
+                console.log(res);
+                setOrders(orders.filter(order => order._id !== id));
+            })
+            .catch((err) => console.log(err));
+    };
+
     return (
         <>
             <CustomerLayout>
@@ -34,9 +45,9 @@ const OrderHistory = () => {
                     <h3 className='fs-5 fw-bold'>All Orders</h3>
 
                     <div className="d-flex align-items-center justify-content-between border-bottom pb-3">
-                        <form className="d-flex" role="search">
+                        {/* <form className="d-flex" role="search">
                             <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                        </form>
+                        </form> */}
                     </div>
 
                     {/* Table */}
@@ -57,16 +68,22 @@ const OrderHistory = () => {
                                     orders.map((order) => {
                                         return (
                                             <tr key={order._id}>
-                                                <td>{order._id}</td>
-                                                <td>{order.createdAt}</td>
-                                                <td>{order.products[0].product}</td>
-                                                <td>{order.products[0].price}</td>
+                                                <td>{order.orderID}</td>
+                                                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                                                <td>{order.products.product}</td>
+                                                <td>{order.products.price}</td>
                                                 <td>
                                                     <span className={getStatusBadgeClass(order.status)}>{order.status}</span>
                                                 </td>
                                                 <td>
-                                                    <button className='btn btn-dark me-2'><i className="bi bi-pencil-square"></i></button>
-                                                    <button className='btn btn-danger'><i className="bi bi-trash-fill"></i></button>
+                                                    <Link to={`/user/update-order/${order._id}`}>
+                                                        <button className="btn btn-dark me-2">
+                                                            <i className="bi bi-pencil-square"></i>
+                                                        </button>
+                                                    </Link>
+                                                    <button className="btn btn-danger" onClick={() => handleDelete(order._id)}>
+                                                        <i className="bi bi-trash-fill"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         );

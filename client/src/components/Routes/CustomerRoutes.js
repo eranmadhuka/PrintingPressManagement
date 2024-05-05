@@ -5,20 +5,19 @@ import OrderHistory from "../dashboard/customerDashboard/OrderHistory";
 import ChangePassword from "../dashboard/customerDashboard/ChangePassword";
 import CustomerNotification from "../dashboard/customerDashboard/CustomerNotification"; // Import NotificationPage component
 import FeedbackForm from "../dashboard/customerDashboard/FeedbackForm";
-import DeleteAccount from "../dashboard/customerDashboard/DeleteAccount";
-import LogoutPage from "../dashboard/customerDashboard/LogoutPage";
+import UpdateOrder from "../dashboard/customerDashboard/UpdateOrder";
 
 const CustomerRoutes = () => {
     return (
         <Routes>
-            <Route path="/:id" element={<CustomerDashboard />} />
+            <Route path="/orders" element={<OrderHistory />} />
+            <Route path="/update-order/:id" element={<UpdateOrder />} />
+            <Route path="/:email" element={<CustomerDashboard />} />
             <Route path="/orders" element={<OrderHistory />} />
             <Route path="/wishlist" element={<OrderHistory />} />
-            <Route path="/updatepassword" element={<ChangePassword />} />
-            <Route path="/notifications" element={<CustomerNotification />} />
-            <Route path="/feedback" element={<FeedbackForm />} />
-            <Route path="/deleteAccount:/id" element={<DeleteAccount />} />
-            <Route path="/logout" element={<LogoutPage />} />
+            <Route path="/updatepassword/:email" element={<ChangePassword />} />
+            <Route path="/notifi/:email" element={<CustomerNotification />} />
+            <Route path="/feedback/:email" element={<FeedbackForm />} />
         </Routes>
     )
 }

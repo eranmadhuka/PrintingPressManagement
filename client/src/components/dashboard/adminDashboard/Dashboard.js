@@ -56,7 +56,7 @@ const Dashboard = () => {
                                     <div className="mb-4">
                                         <h4 className="card-title float-left fs-5 fw-bold">Visit And Sales Statistics</h4>
                                     </div>
-                                    <BarChart />
+                                    {/* <BarChart /> */}
                                 </div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@ const Dashboard = () => {
                                     <div className="mb-4">
                                         <h4 className="card-title float-left fs-5 fw-bold">Visit And Sales Statistics</h4>
                                     </div>
-                                    <PieChart />
+                                    {/* <PieChart /> */}
                                 </div>
                             </div>
                         </div>

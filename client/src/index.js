@@ -1,18 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { AuthContextProvider } from "./components/context/AuthContext";
+
 import "bootstrap-icons/font/bootstrap-icons.css";
-// Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
-// Bootstrap Bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import "./index.css";
 
-import './index.css';
+const stripePromise = loadStripe('pk_test_51PCvlA01WOktj22OUQfJWjznDW6RukNEc3Co8PzAbd7Z9mgxTWX86Y74VTbfgBNtc5wVHvy4ZQyTRpJmA24FvwJd00D6V6i1Kk');
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <Elements stripe={stripePromise}>
+      <AuthContextProvider>
+        <App />
+      </AuthContextProvider>
+    </Elements>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
-

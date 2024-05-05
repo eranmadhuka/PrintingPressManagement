@@ -8,7 +8,7 @@ const fs = require("fs");
 // Multer configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./files");
+    cb(null, "./flies");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now();

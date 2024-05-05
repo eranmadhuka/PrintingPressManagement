@@ -1,39 +1,34 @@
-import React, { useState } from "react";
-// import "./customer.css";
+import React, { useEffect, useState } from "react";
+import "./customer.css";
 import CustomerLayout from "../../Layouts/CustomerLayout";
 import Axios from "axios";
+import { useAuthContext } from "../../../hooks/useAuthContext";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const FeedbackForm = () => {
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [feedback, setFeedback] = useState("");
   const [errors, setErrors] = useState({});
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
 
-  const submitFeedback = async (feedbackData) => {
-    try {
-      const response = await Axios.post(
-        "http://localhost:5000/auth/feedback",
-        feedbackData,
-        {
-          headers: {
-            /* Authorization: `Bearer ${token}`,*/
-            // Include user authentication token
-          },
-        }
-      );
-      console.log(response.data.message);
-    } catch (error) {
-      console.error("Failed to submit feedback:", error.response.data.error);
+  useEffect(() => {
+    if (user) {
+      Axios.get(`http://localhost:5000/auth/customer/` + user.email, {
+        headers: {
+          Authorization: `Bearer ${user.token}`, // Pass JWT token in the Authorization header
+        },
+      })
+        .then((result) => {
+          console.log(result);
+          setUsername(result.data.username);
+          setEmail(result.data.email);
+        })
+        .catch((err) => console.log(err));
     }
-  };
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+  }, [user]);
 
   const handleFeedbackChange = (e) => {
     setFeedback(e.target.value);
@@ -44,31 +39,44 @@ const FeedbackForm = () => {
 
     // Validation rules
     let errors = {};
-    if (!name.trim()) {
-      errors.name = "Name is required";
-    }
-    if (!email.trim()) {
-      errors.email = "Email is required";
-    } else if (!isValidEmail(email)) {
-      errors.email = "Invalid email format";
-    }
     if (!feedback.trim()) {
       errors.feedback = "Feedback is required";
     }
 
     // If there are no errors, proceed with form submission
     if (Object.keys(errors).length === 0) {
-      // Perform form submission or further actions here
-      console.log("Submitting feedback:", { name, email, feedback });
+      if (!user || !user.token) {
+        console.error("User not authenticated");
+        return;
+      }
+      Axios.post(
+        `http://localhost:5000/auth/feedbacks/` + user.email,
+        {
+          feedback,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`, // Pass JWT token in the Authorization header
+          },
+        }
+      )
+        .then((result) => {
+          console.log(result);
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Feedback submitted successfully!",
+          });
+          navigate("/user/" + user.email); // Navigate to the appropriate route after successful update
+        })
+        .catch((error) => {
+          console.error("Error submitting feedback:", error);
+          // Handle error
+        });
     } else {
       // Display validation errors
       setErrors(errors);
     }
-  };
-
-  // Function to validate email format
-  const isValidEmail = (email) => {
-    return /\S+@\S+\.\S+/.test(email);
   };
 
   return (
@@ -84,20 +92,15 @@ const FeedbackForm = () => {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">
-                    Name:
+                    User Name:
                   </label>
                   <input
                     type="text"
-                    className={`form-control ${errors.name ? "is-invalid" : ""
-                      }`}
+                    className="form-control"
                     id="name"
-                    placeholder="Enter your name"
-                    value={name}
-                    onChange={handleNameChange}
+                    value={username}
+                    readOnly
                   />
-                  {errors.name && (
-                    <div className="invalid-feedback">{errors.name}</div>
-                  )}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
@@ -105,16 +108,11 @@ const FeedbackForm = () => {
                   </label>
                   <input
                     type="email"
-                    className={`form-control ${errors.email ? "is-invalid" : ""
-                      }`}
+                    className="form-control"
                     id="email"
-                    placeholder="Enter your email"
                     value={email}
-                    onChange={handleEmailChange}
+                    readOnly
                   />
-                  {errors.email && (
-                    <div className="invalid-feedback">{errors.email}</div>
-                  )}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="feedback" className="form-label">

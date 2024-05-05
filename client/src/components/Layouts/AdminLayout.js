@@ -71,9 +71,12 @@ const AdminLayout = ({ children }) => {
                             </li>
 
                             {/* Customer collapse */}
-                            <li className={`mb-1 nav-item border-bottom ${location.pathname.includes('/admin/customers') ? 'active' : ''}`}>
+                            <li
+                                className={`mb-1 nav-item border-bottom ${location.pathname.includes("/admin/customers") ? "active" : ""
+                                    }`}
+                            >
                                 <Link
-                                    className='text-decoration-none d-block nav-link  p-3'
+                                    className="text-decoration-none d-block nav-link  p-3"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#customer-collapse"
                                     aria-expanded="false"
@@ -83,7 +86,18 @@ const AdminLayout = ({ children }) => {
                                 <div className="collapse" id="customer-collapse">
                                     <ul className="btn-toggle-nav list-unstyled  pb-1 small">
                                         <li>
-                                            <Link to="/admin/customers" className='link-body-emphasis d-inline-flex text-decoration-none rounded'>All Customers</Link>
+                                            <Link
+                                                to="/admin/customers"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                All Customers
+                                            </Link>
+                                            <Link
+                                                to="/admin/feedbackmanagement"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Feedbacks
+                                            </Link>
                                         </li>
                                     </ul>
                                 </div>

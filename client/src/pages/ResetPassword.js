@@ -15,7 +15,7 @@ const ResetPassword = () => {
             // Fix the validation condition to check password instead of email
             errors.password = "Password is required";
         } else if (
-            !/^(?=.[a-zA-Z])(?=.\d)(?=.[@$!%#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
+            !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
                 password
             )
         ) {
@@ -31,7 +31,7 @@ const ResetPassword = () => {
         setSubmitted(true);
 
         if (validateForm()) {
-            Axios.post(`http://localhost:3001/auth/resetpassword/${token}`, {
+            Axios.post(`http://localhost:5000/auth/resetpassword/${token}`, {
                 password,
             })
                 .then((response) => {

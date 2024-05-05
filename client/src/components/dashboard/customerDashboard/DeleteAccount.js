@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import CustomerLayout from "../../Layouts/CustomerLayout";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import "./customer.css";
 import Axios from "axios";
+import { useAuthContext } from "../../../hooks/useAuthContext";
+import Swal from "sweetalert2";
 
 const DeleteAccount = () => {
-  const { id } = useParams();
   const [users, setUsers] = useState([]);
+  const { user } = useAuthContext();
 
   useEffect(() => {
-    Axios.get("http://localhost:5000/auth/customer")
+    Axios.get("http://localhost:5000/auth/customer/" + user.email)
       .then((result) => {
         console.log(result);
         setUsers(result.data);
@@ -16,20 +19,13 @@ const DeleteAccount = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  const [showModal, setShowModal] = useState(false);
-
-  const handleModalClose = () => {
-    setShowModal(false);
-  };
-
-  const handleDeleteAccount = (id) => {
-    Axios.delete("http://localhost:3001/auth/deleteaccount/" + id)
+  const handleDeleteAccount = () => {
+    Axios.delete("http://localhost:5000/auth/deleteaccount/" + user.email)
       .then((res) => {
         console.log(res);
         window.location.reload();
       })
       .catch((err) => console.log(err));
-    setShowModal(true); // Show confirmation modal
   };
 
   return (
@@ -50,54 +46,18 @@ const DeleteAccount = () => {
               </p>
               <button
                 className="btn btn-danger"
-                onClick={(e) => handleDeleteAccount(id)}
+                onClick={(e) => handleDeleteAccount(user.email)}
               >
                 Delete Account
               </button>
-              <Link to="/" className="btn btn-secondary ms-2">
+              <Link to="/register" className="btn btn-secondary ms-2">
                 Cancel
               </Link>
             </div>
           </div>
-
-          {/* Modal */}
-          <div
-            className={`modal fade ${showModal ? "show" : ""}`}
-            id="confirmationModal"
-            tabIndex="-1"
-            aria-labelledby="confirmationModalLabel"
-            aria-hidden={!showModal}
-            style={{ display: showModal ? "block" : "none" }}
-          >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title" id="confirmationModalLabel">
-                    Account Deletion Confirmation
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    onClick={handleModalClose}
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  <p>Your account has been successfully deleted.</p>
-                </div>
-                <div className="modal-footer">
-                  <Link to="/" className="btn btn-primary">
-                    OK
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* End Modal */}
         </div>
       </div>
     </CustomerLayout>
   );
 };
-
 export default DeleteAccount;

@@ -19,13 +19,13 @@ const orderSchema = new mongoose.Schema({
     },
     customer: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
+        ref: 'customers',
         required: true
     },
-    products: [{
+    products: {
         product: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
+            ref: 'products',
             required: true
         },
         quantity: {
@@ -35,8 +35,19 @@ const orderSchema = new mongoose.Schema({
         price: {
             type: Number,
             required: true
+        },
+        additionalDetails: {
+            type: Object, // Additional details stored as an object
+            default: {} // Default value as an empty object
         }
-    }],
+    },
+    shippingDetails: {
+        fullName: { type: String, required: true },
+        address: { type: String, required: true },
+        city: { type: String, required: true },
+        zipCode: { type: String, required: true },
+        country: { type: String, required: true }
+    },
     status: {
         type: String,
         enum: ['Pending', 'Confirmed', 'Shipped', 'Delivered'],
@@ -48,7 +59,6 @@ const orderSchema = new mongoose.Schema({
     }
 });
 
-// Create model for Order
 const Order = mongoose.model('orders', orderSchema);
 
 module.exports = Order;

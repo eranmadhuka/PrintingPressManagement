@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const DeliverySchema = new mongoose.Schema({
-  driverId: {
+  employeeId: {
     type: String,
     required: true,
   },

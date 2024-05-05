@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const AddNewVehicle = () => {
   const [vehicleName, setVehicleName] = useState("");
@@ -37,6 +38,10 @@ const AddNewVehicle = () => {
 
     if (!vehicleNumber) {
       setNumberError("Vehicle Number is required");
+      isValid = false;
+    } // Basic number validation
+    else if (!/^\d+$/.test(vehicleNumber)) {
+      setNumberError("Vehicle Number must be an integer");
       isValid = false;
     }
 
@@ -83,8 +88,7 @@ const AddNewVehicle = () => {
             headers: { "Content-Type": "multipart/form-data" },
           })
           .then((response) => {
-            console.log("Update successful: ", response.data);
-            alert("Vehicle updated successfully!");
+            Swal.fire("Success", `Vehicle updated successfully`, "success");
             navigate("/admin/transport/vehicles");
           });
       } catch (error) {
@@ -101,8 +105,7 @@ const AddNewVehicle = () => {
           // Something happened in setting up the request that triggered an Error
           console.error("Error", error.message);
         }
-        console.error(error.config);
-        alert("Failed to add vehicle. Please try again.");
+        Swal.fire("Error", "Failed to add vehicle. Please try again.", "error");
       } finally {
         setSubmitting(false);
       }
@@ -192,6 +195,12 @@ const AddNewVehicle = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="vdocument" className="form-label">
+                <p>
+                  <em>
+                    (Please ensure documents are accurate before submitting your
+                    registration, as changes cannot be made afterwards).
+                  </em>
+                </p>
                 Vehicle Registration Document
               </label>
               <input
@@ -231,6 +240,7 @@ const AddNewVehicle = () => {
                 checked={isInformationAccurate}
                 onChange={(e) => setIsInformationAccurate(e.target.checked)}
               />
+
               <label className="form-check-label" htmlFor="exampleCheck1">
                 I confirm the accuracy of the information I have supplied.
               </label>

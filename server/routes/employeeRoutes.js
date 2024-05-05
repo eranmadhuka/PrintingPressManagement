@@ -1,7 +1,39 @@
 const express = require("express");
 const router = express.Router();
-
 const Employee = require("../models/Employee");
+
+router.get("/drivers/ids", async (req, res) => {
+    try {
+        // Find employees with designation "Driver" and return only their IDs
+        const driverIds = await Employee.find(
+            { designation: "Driver" },
+            { _id: 1 } // Project only the _id field
+        ).select("_id"); // Optionally reiterate to select only _id for clarity
+
+        // Transform the data to return a list of IDs
+        const ids = driverIds.map((driver) => driver._id);
+
+        res.json(ids);
+    } catch (error) {
+        console.error("Error fetching driver IDs:", error);
+        res.status(500).json({ error: "Error fetching driver IDs" });
+    }
+});
+
+// Route to get detailed information about drivers
+router.get("/drivers/details", async (req, res) => {
+    try {
+        // Find employees with designation "Driver" and return detailed information
+        const drivers = await Employee.find(
+            { designation: "Driver" },
+            { _id: 1, fname: 1, lname: 1, phone: 1 }
+        );
+        res.json(drivers);
+    } catch (error) {
+        console.error("Error fetching driver details:", error);
+        res.status(500).json({ error: "Error fetching driver details" });
+    }
+});
 
 // All users
 router.get("/", (req, res) => {

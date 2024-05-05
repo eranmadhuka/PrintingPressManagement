@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomerLayout from "../../Layouts/CustomerLayout";
-// import proImg from "../../../assets/images/users/user1.jpg";
-// import "./customer.css";
+import "./customer.css";
+import axios from "axios";
+import { useAuthContext } from "../../../hooks/useAuthContext";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState("");
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   const handleCurrentPasswordChange = (e) => {
     setCurrentPassword(e.target.value);
@@ -39,6 +45,9 @@ const ChangePassword = () => {
     } else if (!passwordRegex.test(newPassword)) {
       errors.newPassword =
         "Password must contain at least 8 characters, including letters, numbers, and a special character";
+    } else if (newPassword === currentPassword) {
+      errors.newPassword =
+        "Please enter a different password from your current one";
     }
     if (!confirmNewPassword.trim()) {
       errors.confirmNewPassword = "Confirm New Password is required";
@@ -48,11 +57,47 @@ const ChangePassword = () => {
 
     if (Object.keys(errors).length === 0) {
       // Proceed with form submission
-      console.log("Submitting:", {
-        currentPassword,
-        newPassword,
-        confirmNewPassword,
-      });
+      if (!user || !user.token) {
+        console.error("User not authenticated");
+        // Handle authentication error, such as redirecting to the login page
+        return;
+      }
+
+      axios
+        .post(
+          "http://localhost:5000/auth/changepassword/" + user.email,
+          {
+            currentPassword,
+            newPassword,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`, // Pass JWT token in the Authorization header
+            },
+          }
+        )
+        .then((response) => {
+          setSuccess(response.data.message);
+          setCurrentPassword("");
+          setNewPassword("");
+          setConfirmNewPassword("");
+          console.log(response.data.message);
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "password updated successfully!",
+          });
+          navigate("/user/" + user.email);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            console.error("Unauthorized: Fill the fields");
+            setErrors({ currentPassword: "Wrong password" });
+          } else {
+            console.error("Error:", error);
+            // Handle other errors
+          }
+        });
     } else {
       // Display validation errors
       setErrors(errors);

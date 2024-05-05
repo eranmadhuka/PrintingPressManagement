@@ -55,6 +55,9 @@ const EmployeeSchema = new mongoose.Schema({
     department: {
         type: String,
     },
+    salary: {
+        type: String,
+    }
 });
 
 module.exports = Employee = mongoose.model("employees", EmployeeSchema);
