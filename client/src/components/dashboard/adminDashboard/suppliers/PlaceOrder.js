@@ -1,25 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../../../Layouts/AdminLayout";
 
 const PlaceOrder = () => {
+  const [supplier, setSupplier] = useState([]);
+  const [selectedSupplier, setSelectedSupplier] = useState(""); // State to hold selected supplier email
+
   const [productID, setProductID] = useState("");
   const [productName, setProductName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [unitPrice, setUnitPrice] = useState("");
-  const [totalAmount, setTotalAmount] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
-  const [errors, setErrors] = useState({}); // State to hold validation errors
+  const [errors, setErrors] = useState({}); // State to hold validation errorsa
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/supplier")
+      .then((result) => setSupplier(result.data))
+      .catch((err) => console.log(err));
+    console.log(supplier);
+  }, []);
+
+  useEffect(() => {
+    setTotalAmount(parseFloat(quantity) * parseFloat(unitPrice));
+  }, [quantity, unitPrice]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     // Basic validation
     const errors = {};
+    const numberPattern = /^[0-9]+$/;
+
     if (!productID.trim()) {
       errors.productID = "Product ID is required";
     }
@@ -28,18 +45,13 @@ const PlaceOrder = () => {
     }
     if (!quantity.trim()) {
       errors.quantity = "Quantity is required";
-    } else if (isNaN(quantity)) {
+    } else if (!quantity.match(numberPattern)) {
       errors.quantity = "Quantity must be a number";
     }
     if (!unitPrice.trim()) {
       errors.unitPrice = "Unit Price is required";
-    } else if (isNaN(unitPrice)) {
+    } else if (!unitPrice.match(numberPattern)) {
       errors.unitPrice = "Unit Price must be a number";
-    }
-    if (!totalAmount.trim()) {
-      errors.totalAmount = "Total Amount is required";
-    } else if (isNaN(totalAmount)) {
-      errors.totalAmount = "Total Amount must be a number";
     }
     if (!date.trim()) {
       errors.date = "Date is required";
@@ -72,6 +84,7 @@ const PlaceOrder = () => {
         totalAmount,
         date,
         description,
+        supplierEmail: selectedSupplier, // Include selected supplier email in the request
       })
       .then((result) => {
         console.log(result);
@@ -92,7 +105,7 @@ const PlaceOrder = () => {
                 Product ID
               </label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 id="PID"
                 value={productID}
@@ -128,7 +141,26 @@ const PlaceOrder = () => {
               )}
             </div>
 
-            {/* Other form inputs here */}
+            <div className="mb-3">
+              <label htmlFor="PSupplier" className="form-label">
+                Supplier Email
+              </label>
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                id="PSupplier"
+                value={selectedSupplier}
+                onChange={(e) => setSelectedSupplier(e.target.value)}
+              >
+                <option value="">Select a supplier</option>
+                {supplier.map((item) => (
+                  <option key={item.id} value={item.emailAddress}>
+                    {item.emailAddress}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="mb-3">
               <label htmlFor="PQuantity" className="form-label">
                 Quantity
@@ -166,15 +198,12 @@ const PlaceOrder = () => {
                 Total Amount
               </label>
               <input
+                disabled
                 type="number"
                 className="form-control"
                 id="PTotal"
                 value={totalAmount}
-                onChange={(e) => setTotalAmount(e.target.value)}
               />
-              {errors.totalAmount && (
-                <div className="text-danger">{errors.totalAmount}</div>
-              )}
             </div>
 
             <div className="mb-3">

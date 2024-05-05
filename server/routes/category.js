@@ -1,5 +1,5 @@
 const express = require('express');
-const Categories = require('../models/Category');
+const Categories = require('../models/categories');
 const router = express.Router();
 
 // Save category

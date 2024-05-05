@@ -31,10 +31,13 @@ const incomeStatementRoutes = require('./routes/incomeStatementRoutes');
 // const inventoryRoutes = require('./routes/inventoryRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const productRoutes = require('./routes/productRoutes');
+
 const supplierRoutes = require('./routes/supplierRoutes');
-// const transportRoutes = require('./routes/transportRoutes');
+const rawRoutes = require("./routes/rawMaterialRoutes");
+
 const vehicle = require("./routes/vehicleRoutes");
 const deliveryRoutes = require("./routes/deliveryRoutes");
+
 const categoryRoutes = require("./routes/category");
 
 // Stripe Routes
@@ -63,9 +66,13 @@ app.use('/financial/incomeStatement', incomeStatementRoutes);
 
 // app.use('/inventory', inventoryRoutes);
 app.use('/orders', orderRoutes);
+
 app.use('/products', productRoutes);
+app.use('/api', categoryRoutes);
+
 app.use('/supplier', supplierRoutes);
-// app.use('/transport', transportRoutes);
+app.use("/raw", rawRoutes);
+
 app.use("/", vehicle);
 app.use("/api/deliveries", deliveryRoutes);
 app.use("/api/categories", categoryRoutes);

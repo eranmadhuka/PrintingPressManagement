@@ -6,7 +6,7 @@ import Orders from '../dashboard/adminDashboard/orders/Orders';
 import Refunds from '../dashboard/adminDashboard/orders/Refunds';
 
 import Products from '../dashboard/adminDashboard/products/Products';
-import Categories from '../dashboard/adminDashboard/products/Categories';
+import Categories from '../dashboard/adminDashboard/products/Category';
 
 import Customers from "../dashboard/adminDashboard/customers/Customers";
 import FeedbackManagement from "../dashboard/adminDashboard/customers/FeedbackManagement";
@@ -42,7 +42,9 @@ import IncomedetailsForm from "../dashboard/adminDashboard/financial/Incomedetai
 
 import AddProduct from '../dashboard/adminDashboard/products/AddProduct';
 import UpdateProduct from '../dashboard/adminDashboard/products/UpdateProduct';
-// import ProductDetail from '../../pages/ProductDetail';
+import CreateCategory from '../dashboard/adminDashboard/products/CreateCategory';
+import EditCategory from '../dashboard/adminDashboard/products/EditCategory';
+import CategoryDetails from '../dashboard/adminDashboard/products/CategoryDetails';
 
 const AdminRoutes = () => {
     return (
@@ -56,9 +58,13 @@ const AdminRoutes = () => {
 
             {/* Products Routes */}
             <Route path="/products" element={<Products />} />
-            <Route path="/products/categories" element={<Categories />} />
             <Route path="/products/addProduct" element={<AddProduct />} />
             <Route path="/products/updateProduct/:id" element={<UpdateProduct />} />
+
+            <Route path="/products/categories" element={<Categories />} />
+            <Route path="/products/AddCategory" element={<CreateCategory />} />
+            <Route path="/products/editCategory/:id" element={<EditCategory />} />
+            <Route path="/products/categoryDetails/:id" element={<CategoryDetails />} />
 
             {/* Customers Routes */}
             <Route path="/customers" element={<Customers />} />

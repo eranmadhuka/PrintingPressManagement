@@ -62,21 +62,6 @@ const UpdateSuppliers = () => {
       if (!phonePattern.test(phoneNumber)) {
         errors.phoneNumber = "Please enter a valid 10-digit phone number";
       }
-
-      axios
-        .put("http://localhost:5000/supplier/updateSupplier/" + id, {
-          supplierID,
-          supplierName,
-          companyName,
-          companyAddress,
-          emailAddress,
-          phoneNumber,
-        })
-        .then((result) => {
-          console.log(result);
-          navigate("/admin/suppliers");
-        })
-        .catch((err) => console.log(err));
     }
 
     // If there are errors, set them in the state and prevent form submission
@@ -86,14 +71,29 @@ const UpdateSuppliers = () => {
     }
 
     // If all validations pass, proceed with submitting the form
-    alert(`Supplier ${supplierName} has been added.`);
+    axios
+      .put("http://localhost:5000/supplier/updateSupplier/" + id, {
+        supplierID,
+        supplierName,
+        companyName,
+        companyAddress,
+        emailAddress,
+        phoneNumber,
+      })
+      .then((result) => {
+        console.log(result);
+        navigate("/admin/suppliers");
+      })
+      .catch((err) => console.log(err));
+
+    alert(`Supplier has been updated.`);
   };
 
   return (
     <>
       <AdminLayout>
         <div className="bg-white p-3 mt-2">
-          <h3 className="fs-5 fw-bold">Add Supplier</h3>
+          <h3 className="fs-5 fw-bold">Update Supplier</h3>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">

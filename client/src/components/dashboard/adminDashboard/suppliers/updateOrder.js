@@ -4,12 +4,15 @@ import axios from "axios";
 import AdminLayout from "../../../Layouts/AdminLayout";
 
 const UpdateOrder = () => {
+  const [supplier, setSupplier] = useState([]);
+  const [selectedSupplier, setSelectedSupplier] = useState(""); // State to hold selected supplier email
+
   const { id } = useParams();
   const [productID, setProductID] = useState("");
   const [productName, setProductName] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [unitPrice, setUnitPrice] = useState("");
-  const [totalAmount, setTotalAmount] = useState("");
+  const [quantity, setQuantity] = useState(0);
+  const [unitPrice, setUnitPrice] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
@@ -18,44 +21,57 @@ const UpdateOrder = () => {
     axios
       .get("http://localhost:5000/raw/getRawMaterials/" + id)
       .then((result) => {
-        console.log(result);
-        setProductID(result.data.productID);
-        setProductName(result.data.productName);
-        setQuantity(result.data.quantity.toString());
-        setUnitPrice(result.data.unitPrice.toString());
-        setTotalAmount(result.data.totalAmount.toString());
-        setDate(result.data.date);
-        setDescription(result.data.description);
+        const data = result.data;
+        setProductID(data.productID);
+        setProductName(data.productName);
+        setSelectedSupplier(data.selectedSupplier);
+        setQuantity(parseFloat(data.quantity));
+        setUnitPrice(parseFloat(data.unitPrice));
+        setTotalAmount(parseFloat(data.totalAmount));
+        setDate(data.date);
+        setDescription(data.description);
       })
+      .catch((err) => console.log(err));
+  }, [id]);
+
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/supplier")
+      .then((result) => setSupplier(result.data))
       .catch((err) => console.log(err));
   }, []);
 
-  const [errors, setErrors] = useState({}); // State to hold validation errors
+  useEffect(() => {
+    setTotalAmount(parseFloat(quantity) * parseFloat(unitPrice));
+  }, [quantity, unitPrice]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Basic validation
     const errors = {};
+    const numberPattern = /^[0-9]+$/;
+
     if (!productID.trim()) {
       errors.productID = "Product ID is required";
     }
     if (!productName.trim()) {
       errors.productName = "Product Name is required";
     }
-    if (!quantity.trim()) {
+    if (!quantity.toString().trim()) {
       errors.quantity = "Quantity is required";
-    } else if (isNaN(quantity)) {
+    } else if (!quantity.toString().match(numberPattern)) {
       errors.quantity = "Quantity must be a number";
     }
-    if (!unitPrice.trim()) {
+    if (!unitPrice.toString().trim()) {
       errors.unitPrice = "Unit Price is required";
-    } else if (isNaN(unitPrice)) {
+    } else if (!unitPrice.toString().match(numberPattern)) {
       errors.unitPrice = "Unit Price must be a number";
     }
-    if (!totalAmount.trim()) {
+    if (!totalAmount.toString().trim()) {
       errors.totalAmount = "Total Amount is required";
-    } else if (isNaN(totalAmount)) {
+    } else if (!totalAmount.toString().match(numberPattern)) {
       errors.totalAmount = "Total Amount must be a number";
     }
     if (!date.trim()) {
@@ -70,11 +86,12 @@ const UpdateOrder = () => {
       errors.description = "Description is required";
     }
 
-    // If there are errors, set them in the state and prevent form submission
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
       return;
     }
+
+    alert(`The order has been updated!`);
 
     axios
       .put("http://localhost:5000/raw/updateRawMaterials/" + id, {
@@ -93,14 +110,11 @@ const UpdateOrder = () => {
       .catch((err) => console.log(err));
   };
 
-  // If all validations pass, proceed with placing the order
-  alert(`The order has been placed!`);
-
   return (
     <>
       <AdminLayout>
         <div className="bg-white p-3 mt-2">
-          <h3 className="fs-5 fw-bold">Place Order</h3>
+          <h3 className="fs-5 fw-bold">Update Order</h3>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -144,7 +158,26 @@ const UpdateOrder = () => {
               )}
             </div>
 
-            {/* Other form inputs here */}
+            <div className="mb-3">
+              <label htmlFor="PSupplier" className="form-label">
+                Supplier Email
+              </label>
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                id="PSupplier"
+                value={selectedSupplier}
+                onChange={(e) => setSelectedSupplier(e.target.value)}
+              >
+                <option value="">Select a supplier</option>
+                {supplier.map((item) => (
+                  <option key={item.id} value={item.emailAddress}>
+                    {item.emailAddress}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="mb-3">
               <label htmlFor="PQuantity" className="form-label">
                 Quantity
@@ -154,7 +187,7 @@ const UpdateOrder = () => {
                 className="form-control"
                 id="PQuantity"
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={(e) => setQuantity(parseFloat(e.target.value))}
               />
               {errors.quantity && (
                 <div className="text-danger">{errors.quantity}</div>
@@ -170,7 +203,7 @@ const UpdateOrder = () => {
                 className="form-control"
                 id="PUnit"
                 value={unitPrice}
-                onChange={(e) => setUnitPrice(e.target.value)}
+                onChange={(e) => setUnitPrice(parseFloat(e.target.value))}
               />
               {errors.unitPrice && (
                 <div className="text-danger">{errors.unitPrice}</div>
@@ -186,7 +219,7 @@ const UpdateOrder = () => {
                 className="form-control"
                 id="PTotal"
                 value={totalAmount}
-                onChange={(e) => setTotalAmount(e.target.value)}
+                readOnly
               />
               {errors.totalAmount && (
                 <div className="text-danger">{errors.totalAmount}</div>
@@ -223,7 +256,7 @@ const UpdateOrder = () => {
               )}
             </div>
             <button type="submit" className="btn btn-primary">
-              Place Order
+              Update Order
             </button>
           </form>
         </div>

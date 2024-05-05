@@ -2,10 +2,23 @@ const mongoose = require("mongoose");
 
 // Function to generate Supplier ID
 const generateSupplierID = () => {
-    const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+    const months = [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+    ];
     const now = new Date();
     const month = months[now.getMonth()];
-    const date = ('0' + now.getDate()).slice(-2);
+    const date = ("0" + now.getDate()).slice(-2);
     const randomNumber = Math.floor(Math.random() * 9000) + 1000;
     return `SUP${month}${date}${randomNumber}`;
 };
@@ -14,7 +27,7 @@ const SupplierSchema = new mongoose.Schema({
     supplierID: {
         type: String,
         default: generateSupplierID,
-        unique: true
+        unique: true,
     },
     supplierName: {
         type: String,

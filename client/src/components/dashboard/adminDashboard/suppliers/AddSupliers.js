@@ -4,7 +4,7 @@ import axios from "axios";
 import AdminLayout from "../../../Layouts/AdminLayout";
 
 const AddSuppliers = () => {
-  // const [supplierID, setSupplierID] = useState("");
+  const [supplierID, setSupplierID] = useState("");
   const [supplierName, setSupplierName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyAddress, setCompanyAddress] = useState("");
@@ -19,9 +19,9 @@ const AddSuppliers = () => {
 
     // Basic validation
     const errors = {};
-    // if (!supplierID.trim()) {
-    //   errors.supplierID = "Supplier ID is required";
-    // }
+    if (!supplierID.trim()) {
+      errors.supplierID = "Supplier ID is required";
+    }
     if (!supplierName.trim()) {
       errors.supplierName = "Supplier Name is required";
     }
@@ -49,7 +49,7 @@ const AddSuppliers = () => {
 
       axios
         .post("http://localhost:5000/supplier/createSupplier", {
-          // supplierID,
+          supplierID,
           supplierName,
           companyName,
           companyAddress,
@@ -79,8 +79,8 @@ const AddSuppliers = () => {
         <div className="bg-white p-3 mt-2">
           <h3 className="fs-5 fw-bold">Add Supplier</h3>
 
-          <form onSubmit={handleSubmit} className="mt-5">
-            {/* <div className="mb-3">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
               <label htmlFor="sID" className="form-label">
                 Supplier ID
               </label>
@@ -94,7 +94,7 @@ const AddSuppliers = () => {
               {errors.supplierID && (
                 <div className="text-danger">{errors.supplierID}</div>
               )}
-            </div> */}
+            </div>
 
             <div className="mb-3">
               <label htmlFor="sName" className="form-label">
