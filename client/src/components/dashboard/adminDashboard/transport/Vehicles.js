@@ -3,24 +3,39 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import Swal from "sweetalert2";
+import PieChart from "../../../charts/PieChart"; // Import the PieChart component
 
 const Vehicles = () => {
   const [vehicles, setVehicles] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [vehicleDataForPieChart, setVehicleDataForPieChart] = useState([]);
 
   useEffect(() => {
     axios
       .get("http://localhost:5000")
       .then((response) => {
         setVehicles(response.data);
+        prepareDataForPieChart(response.data);
       })
       .catch((error) => {
         console.error("Error fetching vehicles: ", error);
       });
   }, []);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  const prepareDataForPieChart = (data) => {
+    const vehicleTypes = {};
+    data.forEach((vehicle) => {
+      if (vehicle.vehicleType in vehicleTypes) {
+        vehicleTypes[vehicle.vehicleType]++;
+      } else {
+        vehicleTypes[vehicle.vehicleType] = 1;
+      }
+    });
+    const formattedData = Object.keys(vehicleTypes).map((type) => ({
+      type,
+      count: vehicleTypes[type],
+    }));
+    setVehicleDataForPieChart(formattedData);
   };
 
   const filteredVehicles = vehicles.filter((vehicle) =>
@@ -78,10 +93,10 @@ const Vehicles = () => {
               <input
                 className="form-control me-2"
                 type="search"
-                placeholder="Search"
+                placeholder="search by VehicleNo "
                 aria-label="Search"
                 value={searchQuery}
-                onChange={handleSearchChange}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </form>
             <Link to="../transport/AddNewVehicle" className="btn btn-primary">
@@ -92,6 +107,7 @@ const Vehicles = () => {
           {/* Table */}
           <div className="mt-3 px-2">
             <table className="table">
+              {/* Table header */}
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -103,6 +119,7 @@ const Vehicles = () => {
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
+              {/* Table body */}
               <tbody>
                 {filteredVehicles.map((vehicle, index) => (
                   <tr key={index}>
@@ -158,6 +175,14 @@ const Vehicles = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* Render Pie Chart */}
+        <div className="bg-white p-3 mt-2">
+          <h3 className="fs-5 fw-bold">Vehicle Types Distribution</h3>
+          <div className="mt-3 px-2">
+            <PieChart data={vehicleDataForPieChart} />
           </div>
         </div>
       </AdminLayout>

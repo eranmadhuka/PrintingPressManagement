@@ -39,6 +39,10 @@ const AddNewVehicle = () => {
     if (!vehicleNumber) {
       setNumberError("Vehicle Number is required");
       isValid = false;
+    } // Basic number validation
+    else if (!/^\d+$/.test(vehicleNumber)) {
+      setNumberError("Vehicle Number must be an integer");
+      isValid = false;
     }
 
     if (!vehicleStatus) {

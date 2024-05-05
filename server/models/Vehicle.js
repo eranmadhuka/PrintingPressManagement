@@ -20,11 +20,11 @@ const VehicleSchema = new mongoose.Schema({
     required: true,
   },
   registrationDocument: {
-    type: String, // You can change this to store file paths or references
+    type: String,
     required: true,
   },
   proofOfInsurance: {
-    type: String, // You can change this to store file paths or references
+    type: String,
     required: true,
   },
   isInformationAccurate: {
@@ -37,4 +37,4 @@ const VehicleSchema = new mongoose.Schema({
   },
 });
 
-module.exports = Vehicle = mongoose.model("Vehicles", VehicleSchema);
+module.exports = Vehicle = mongoose.model("vehicles", VehicleSchema);

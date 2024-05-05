@@ -13,7 +13,7 @@ const AdminLayout = ({ children }) => {
         <nav className="col-md-2 col-lg-2 position-fixed vh-100 overflow-auto bg-white">
           <div className="d-flex flex-column flex-shrink-0 p-3">
             <Link
-              to="/admin"
+              to="/"
               className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
             >
               <img src={Logo} alt="logo" className="logo me-3" />
@@ -28,7 +28,7 @@ const AdminLayout = ({ children }) => {
               >
                 <Link
                   to="/admin"
-                  className="text-decoration-none d-block nav-link  p-3"
+                  className="text-decoration-none d-block nav-link p-3"
                 >
                   <i className="bi bi-cart-check me-2"></i>
                   Dashboard
@@ -130,6 +130,12 @@ const AdminLayout = ({ children }) => {
                       >
                         All Customers
                       </Link>
+                      <Link
+                        to="/admin/feedbackmanagement"
+                        className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                      >
+                        Feedbacks
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -185,6 +191,30 @@ const AdminLayout = ({ children }) => {
                         className="link-body-emphasis d-inline-flex text-decoration-none rounded"
                       >
                         All Suppliers
+                      </Link>
+                    </li>
+                    {/* <li>
+                                            <Link
+                                                to="/admin/suppliers/add-spplier"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Add Suppliers
+                                            </Link>
+                                        </li> */}
+                    <li>
+                      <Link
+                        to="/admin/suppliers/raw-materials"
+                        className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                      >
+                        Raw Materials
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/admin/suppliers/place-order"
+                        className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                      >
+                        Place Order
                       </Link>
                     </li>
                   </ul>
@@ -259,6 +289,14 @@ const AdminLayout = ({ children }) => {
                         All Employees
                       </Link>
                     </li>
+                    {/* <li>
+                                            <Link
+                                                to="/admin/employees/AddEmployee"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Add Employee
+                                            </Link>
+                                        </li> */}
                     <li>
                       <Link
                         to="/admin/employees/leaves"
@@ -275,14 +313,14 @@ const AdminLayout = ({ children }) => {
                         Attendance
                       </Link>
                     </li>
-                    <li>
-                      <Link
-                        to="/admin/employees/departments"
-                        className="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                      >
-                        Departments
-                      </Link>
-                    </li>
+                    {/* <li>
+                                            <Link
+                                                to="/admin/employees/departments"
+                                                className="link-body-emphasis d-inline-flex text-decoration-none rounded"
+                                            >
+                                                Departments
+                                            </Link>
+                                        </li> */}
                   </ul>
                 </div>
               </li>

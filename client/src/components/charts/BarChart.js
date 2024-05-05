@@ -1,36 +1,65 @@
-import React from 'react'
-import Chart from "chart.js/auto";
-import { Bar } from 'react-chartjs-2';
+import React from "react";
+import { Bar } from "react-chartjs-2";
 
-const BarChart = () => {
+const BarChart = ({ data }) => {
+  if (!data || data.length === 0) {
+    return <div>No data available for the bar chart</div>;
+  }
 
-    const labels = ["January", "February", "March", "April", "May", "June"];
-    const data = {
-        labels: labels,
-        datasets: [
-            {
-                label: "My First dataset",
-                backgroundColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderColor: "rgb(255, 99, 132)",
-                data: [50, 10, 5, 2, 20, 30, 45],
-            },
-        ],
+  const labels = data.map((entry) => entry.date);
+  const datasetData = data.map((entry) => entry.count);
 
+  const chartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: "Deliveries by Date",
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgba(54, 162, 235, 0.8)",
+        hoverBorderColor: "rgba(54, 162, 235, 1)",
+        data: datasetData,
+      },
+    ],
+  };
 
-    };
+  const options = {
+    scales: {
+      x: {
+        stacked: true,
+        title: {
+          display: true,
+          text: "Date",
+          color: "#333",
+          font: {
+            weight: "bold",
+          },
+        },
+      },
+      y: {
+        stacked: true,
+        title: {
+          display: true,
+          text: "Number of Deliveries",
+          color: "#333",
+          font: {
+            weight: "bold",
+          },
+        },
+        ticks: {
+          beginAtZero: true,
+          precision: 0,
+        },
+      },
+    },
+  };
 
-    return (
-        <>
-            <Bar data={data} />
-        </>
-    )
-}
+  return (
+    <div>
+      <Bar data={chartData} options={options} />
+    </div>
+  );
+};
 
-export default BarChart
+export default BarChart;

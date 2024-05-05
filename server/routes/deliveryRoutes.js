@@ -52,4 +52,18 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// In your routes file, assuming deliveries is a route dealing with delivery data
+router.delete("/", async (req, res) => {
+  try {
+    const result = await Delivery.deleteMany({ productStatus: "Delivered" });
+    if (result.deletedCount === 0) {
+      return res.status(404).send("No delivered items found to delete.");
+    }
+    res.status(200).send("Delivered items have been successfully deleted.");
+  } catch (error) {
+    console.error("Failed to delete delivered items:", error);
+    res.status(500).send("Error deleting delivered items: " + error.message);
+  }
+});
+
 module.exports = router;

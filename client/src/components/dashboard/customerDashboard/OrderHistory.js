@@ -1,7 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CustomerLayout from '../../Layouts/CustomerLayout'
+import axios from 'axios'
 
 const OrderHistory = () => {
+    const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:5000/orders')
+            .then(response => setOrders(response.data))
+            .catch(error => console.error('Error fetching orders:', error));
+    }, []);
+
+    // Function to get Bootstrap badge class based on order status
+    const getStatusBadgeClass = (status) => {
+        switch (status) {
+            case "Pending":
+                return "badge bg-warning";
+            case "Processing":
+                return "badge bg-primary";
+            case "Completed":
+                return "badge bg-success";
+            case "Cancelled":
+                return "badge bg-danger";
+            default:
+                return "badge bg-secondary";
+        }
+    };
+
     return (
         <>
             <CustomerLayout>
@@ -19,7 +44,6 @@ const OrderHistory = () => {
                         <table className="table table-hover">
                             <thead>
                                 <tr className='table-light'>
-                                    <th scope="col">#</th>
                                     <th scope="col">Order ID</th>
                                     <th scope="col">Order Date</th>
                                     <th scope="col">Product ID</th>
@@ -29,18 +53,25 @@ const OrderHistory = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>O215</td>
-                                    <td>PB513</td>
-                                    <td>23, Feb 2024</td>
-                                    <td>Rs.6500</td>
-                                    <td><span className="badge text-bg-primary">Pending</span></td>
-                                    <td>
-                                        <button className='btn btn-dark me-2'><i className="bi bi-pencil-square"></i></button>
-                                        <button className='btn btn-danger'><i className="bi bi-trash-fill"></i></button>
-                                    </td>
-                                </tr>
+                                {
+                                    orders.map((order) => {
+                                        return (
+                                            <tr key={order._id}>
+                                                <td>{order._id}</td>
+                                                <td>{order.createdAt}</td>
+                                                <td>{order.products[0].product}</td>
+                                                <td>{order.products[0].price}</td>
+                                                <td>
+                                                    <span className={getStatusBadgeClass(order.status)}>{order.status}</span>
+                                                </td>
+                                                <td>
+                                                    <button className='btn btn-dark me-2'><i className="bi bi-pencil-square"></i></button>
+                                                    <button className='btn btn-danger'><i className="bi bi-trash-fill"></i></button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                }
                             </tbody>
                         </table>
                     </div>

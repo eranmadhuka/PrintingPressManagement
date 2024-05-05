@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const DeliverySchema = new mongoose.Schema({
-  driverId: {
+  employeeId: {
     type: String,
     required: true,
   },
@@ -32,4 +32,4 @@ const DeliverySchema = new mongoose.Schema({
   },
 });
 
-module.exports = Delivery = mongoose.model("delivery", DeliverySchema);
+module.exports = Delivery = mongoose.model("deliveries", DeliverySchema);
