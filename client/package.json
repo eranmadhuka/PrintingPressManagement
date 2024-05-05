@@ -11,6 +11,8 @@
     "bootstrap-icons": "^1.11.3",
     "boxicons": "^2.1.4",
     "chart.js": "^4.4.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-chartjs-2": "^5.2.0",

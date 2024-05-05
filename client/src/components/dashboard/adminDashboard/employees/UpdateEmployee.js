@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../../../Layouts/AdminLayout";
 
+//modify password validations
+
 const UpdateEmployee = () => {
   const { id } = useParams();
   const [fname, setfName] = useState("");
@@ -73,6 +75,10 @@ const UpdateEmployee = () => {
     }
     if (!password) {
       errors.password = "Password is required";
+    } else if (password.length < 8) {
+      errors.password = "Password must be at least 8 characters long";
+    } else if (!/[\W_]/.test(password)) {
+      errors.password = "Password must contain at least one special character";
     }
     if (!designation) {
       errors.designation = "Designation is required";
@@ -150,13 +156,16 @@ const UpdateEmployee = () => {
               <label htmlFor="gender" className="form-label">
                 Gender
               </label>
-              <input
-                type="text"
-                className="form-control"
+              <select
+                className="form-select"
                 id="gender"
-                value={gender}
                 onChange={(e) => setGender(e.target.value)}
-              />
+              >
+                <option>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
               {errors.gender && (
                 <div className="text-danger">{errors.gender}</div>
               )}

@@ -15,6 +15,7 @@ const AddEmployee = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [designation, setDesignation] = useState("");
+
   const [department, setDept] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -53,10 +54,15 @@ const AddEmployee = () => {
     }
     if (!password) {
       errors.password = "Password is required";
+    } else if (password.length < 8) {
+      errors.password = "Password must be at least 8 characters long";
+    } else if (!/[\W_]/.test(password)) {
+      errors.password = "Password must contain at least one special character";
     }
     if (!designation) {
       errors.designation = "Designation is required";
     }
+
     if (!department) {
       errors.department = "Department is required";
     }
@@ -65,37 +71,36 @@ const AddEmployee = () => {
       // Proceed with form submission
       Swal.fire("Employee added successfully!");
       setErrors({});
+      axios
+        .post("http://localhost:5000/employees/createEmp", {
+          fname,
+          lname,
+          gender,
+          birthDate,
+          address,
+          email,
+          phone,
+          username,
+          password,
+          designation,
+
+          department,
+        })
+        .then((result) => {
+          console.log(result);
+          navigate("/admin/employees");
+        })
+        .catch((err) => console.log(err));
     } else {
       setErrors(errors);
     }
-
-    axios
-      .post("http://localhost:5000/employees/createEmp", {
-        fname,
-        lname,
-        gender,
-        birthDate,
-        address,
-        email,
-        phone,
-        username,
-        password,
-        designation,
-        department,
-      })
-      .then((result) => {
-        console.log(result);
-        navigate("/admin/employees");
-      })
-
-      .catch((err) => console.log(err));
   };
 
   return (
     <>
       <AdminLayout>
         <div className="bg-white p-3 mt-2">
-          <h3 className='fs-5 fw-bold mb-4'>Add Employee</h3>
+          <h3 className="fs-5 fw-bold mb-4">Add Employee</h3>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="fName" className="form-label">
@@ -135,7 +140,7 @@ const AddEmployee = () => {
                 id="gender"
                 onChange={(e) => setGender(e.target.value)}
               >
-                <option selected>Select Gender</option>
+                <option>Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
@@ -244,12 +249,12 @@ const AddEmployee = () => {
                 <div className="text-danger">{errors.designation}</div>
               )}
             </div>
+
             <select
               className="form-select mb-3"
               aria-label="Default select example"
               onChange={(e) => setDept(e.target.value)}
             >
-              <option value="">Department</option>
               <option value="Finance">Finance</option>
               <option value="Human Resources">Human Resources</option>
               <option value="Transportation">Transportation</option>

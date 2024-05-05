@@ -18,6 +18,10 @@ const AddLeave = () => {
     event.preventDefault();
 
     const errors = {};
+
+    if (new Date(from) > new Date(to)) {
+      errors.to = "To date must be after from date";
+    }
     // if (!name) {
     //   errors.name = "Name is required";
     // }
