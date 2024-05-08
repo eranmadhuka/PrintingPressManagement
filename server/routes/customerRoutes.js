@@ -328,6 +328,23 @@ router.get("/customer/:email", async (req, res) => {
     }
 });
 
+// Get user by ID
+router.get("/customer/:id", async (req, res) => {
+    const userId = req.params.id; // Extract the user ID from request parameters
+
+    try {
+        const user = await User.findById(userId); // Find the user by ID
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json(user); // Send user data as response
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).json({ message: "Failed to fetch user data" });
+    }
+});
+
+
 router.put("/users/:email", async (req, res) => {
     const userEmail = req.params.email;
 

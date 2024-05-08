@@ -18,10 +18,15 @@ const orderSchema = new mongoose.Schema({
         unique: true
     },
     customer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'customers',
+        type: String, // Change type to String to store email
         required: true
     },
+    // customer: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'users',
+    //     required: true
+    // },
+
     products: {
         product: {
             type: mongoose.Schema.Types.ObjectId,

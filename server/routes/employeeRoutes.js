@@ -56,9 +56,9 @@ router.put("/updateEmployee/:id", (req, res) => {
     Employee.findByIdAndUpdate(id, {
         fname: req.body.fname,
         lname: req.body.lname,
-        gender: req.body.lname,
-        birthDate: req.body.lname,
-        address: req.body.lname,
+        gender: req.body.gender,
+        birthDate: req.body.birthDate,
+        address: req.body.address,
         email: req.body.email,
         phone: req.body.phone,
         username: req.body.username,

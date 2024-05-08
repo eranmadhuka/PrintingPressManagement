@@ -5,11 +5,21 @@ import { Link } from "react-router-dom";
 
 const OrderHistory = () => {
     const [orders, setOrders] = useState([]);
+    // const [myOrders, setMyOrders] = useState([]);
+
+    // useEffect(() => {
+    //     axios.get('http://localhost:5000/orders')
+    //         .then(response => setOrders(response.data))
+    //         .catch(error => console.error('Error fetching orders:', error));
+    // }, []);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/orders')
-            .then(response => setOrders(response.data))
-            .catch(error => console.error('Error fetching orders:', error));
+        const userID = 'hweranmadhuka@gmail.com';
+
+        axios
+            .get(`http://localhost:5000/orders/orderHistory/${userID}`)
+            .then((result) => setOrders(result.data))
+            .catch((err) => console.log(err));
     }, []);
 
     // Function to get Bootstrap badge class based on order status

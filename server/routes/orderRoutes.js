@@ -18,32 +18,32 @@ router.get('/:id', getOrder, (req, res) => {
     res.json(res.order);
 });
 
-// Create a new order
-// Create a new order with validation
-// router.post('/', [
-//     body('customer').exists().withMessage('Customer is required'),
-//     body('products').isArray().withMessage('Products must be an array'),
-//     body('status').isIn(['Pending', 'Confirmed', 'Shipped', 'Delivered']).withMessage('Invalid status'),
-// ], async (req, res) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//         return res.status(400).json({ errors: errors.array() });
-//     }
-
-//     // If validation passes, proceed to create the order
-//     const order = new Order({
-//         customer: req.body.customer,
-//         products: req.body.products,
-//         status: req.body.status
-//     });
-
-//     try {
-//         const newOrder = await order.save();
-//         res.status(201).json(newOrder);
-//     } catch (err) {
-//         res.status(400).json({ message: err.message });
-//     }
+// Get Order by User ID
+// router.get("/orderHistory/:id", (req, res) => {
+//     const userID = req.params.id;
+//     Order.find({ customer: userID })
+//         .then((leaves) => {
+//             if (!leaves || leaves.length === 0) {
+//                 return res.status(404).json({ message: "Order not found" });
+//             }
+//             res.json(leaves);
+//         })
+//         .catch((err) => res.status(500).json({ error: err.message }));
 // });
+router.get("/orderHistory/:email", (req, res) => {
+    const userEmail = req.params.email;
+
+    Order.find({ customer: userEmail })
+        .then((orders) => {
+            if (!orders || orders.length === 0) {
+                return res.status(404).json({ message: "Orders not found" });
+            }
+            res.json(orders);
+        })
+        .catch((err) => res.status(500).json({ error: err.message }));
+});
+
+
 
 // Without Validation
 router.post('/', async (req, res) => {

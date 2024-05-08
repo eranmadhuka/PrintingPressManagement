@@ -70,7 +70,8 @@ const Checkout = () => {
     const handleToken = async (token) => {
         try {
             const orderData = {
-                customer: userEmail,
+                customer: 'hweranmadhuka@gmail.com',
+                // customer: '663493b3cbe53c571da7b99c',
                 products: {
                     product: productId,
                     quantity: quantity,
@@ -146,7 +147,7 @@ const Checkout = () => {
                             {/* Stripe Checkout Button */}
                             <StripeCheckout
                                 token={handleToken}
-                                stripeKey="YOUR_STRIPE_PUBLIC_KEY"
+                                stripeKey="pk_test_51PCvlA01WOktj22OUQfJWjznDW6RukNEc3Co8PzAbd7Z9mgxTWX86Y74VTbfgBNtc5wVHvy4ZQyTRpJmA24FvwJd00D6V6i1Kk"
                                 amount={totalAmount * 100} // Amount in cents
                                 name="Your Store Name"
                                 description="Payment for products"
