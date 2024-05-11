@@ -2,17 +2,22 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 const Incomes = () => {
     const [incomeDetails, setIncomeDetails] = useState([]);
     const [totalIncome, setTotalIncome] = useState(0);
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
+    const [isDataAdded, setIsDataAdded] = useState(false);
 
     useEffect(() => {
         axios.get("http://localhost:5000/financial/incomeStatement/getIncomeDetails")
             .then((result) => {
                 setIncomeDetails(result.data);
-                const total = result.data.reduce((acc, item) => acc + item.amount, 0);
+                const total = result.data.reduce((acc, item) => acc + item.products.price, 0);
                 setTotalIncome(total);
             })
             .catch((error) => {
@@ -20,47 +25,72 @@ const Incomes = () => {
             });
     }, []);
 
-    console.log(incomeDetails);
-
-    const handleDelete = (id) => {
-        axios.delete(`http://localhost:5000/financial/incomeStatement/deleteIncomeDetails/${id}`)
-            .then((res) => {
-                console.log(res);
-                window.location.reload(); // Refresh page after deletion
-            })
-            .catch((err) => console.log(err));
+    const handleInputChange = (e) => {
+        setSearchQuery(e.target.value);
     };
+
+    const handleViewOrder = (order) => {
+        setSelectedOrder(order);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
+    const filteredIncomeDetails = incomeDetails.filter((item) =>
+        item.orderID.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.createdAt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.products.product.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const sendTotalIncome = () => {
-        axios.post("http://localhost:5000/financial/incomeStatement/createLPSEntry", {
-            description: "Total Income",
-            entryType: "revenue",
-            date: new Date().toISOString(),
-            amount: totalIncome,
-        })
-            .then((result) => {
-                console.log("Total income sent successfully:", result);
-                // Handle navigation or any other action after successful submission
-            })
-            .catch((err) => console.log("Error sending total income:", err));
-    };
+        setIsFetching(true);
 
-    // const filteredItems = incomeDetails.filter((item) => {
-    //     return item.orderId.toLowerCase().includes(searchQuery.toLowerCase());
-    // });
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action will add the total salary to the Loss or Profit entries.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, add it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post(`http://localhost:5000/financial/createLPSEntry`, {
+                    description: "Total Income",
+                    entryType: "revenue",
+                    date: new Date().toISOString(),
+                    amount: totalIncome,
+                })
+                    .then((result) => {
+                        console.log("Total income sent successfully:", result);
+                        // Handle navigation or any other action after successful submission
+                    })
+                    .catch((err) => console.log("Error sending total income:", err));
+            } else {
+                setIsFetching(false);
+            }
+        });
+
+
+    };
 
     return (
         <AdminLayout>
             <div className="container">
                 <div className="bg-white p-3 mt-2">
                     <h2>Income Details (Order Details)</h2>
-                    {/* <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    /> */}
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search "
+                            value={searchQuery}
+                            onChange={handleInputChange}
+                        />
+                    </div>
                     <table className="table">
                         <thead>
                             <tr>
@@ -70,11 +100,11 @@ const Incomes = () => {
                                 <th>Product ID</th>
                                 <th>Quantity</th>
                                 <th>Total Amount</th>
-                                <th>Actions</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {incomeDetails.map((item) => (
+                            {filteredIncomeDetails.map((item) => (
                                 <tr key={item._id}>
                                     <td>{item.orderID}</td>
                                     <td>{item.customer}</td>
@@ -83,17 +113,11 @@ const Incomes = () => {
                                     <td>{item.products.quantity}</td>
                                     <td>{item.products.price}</td>
                                     <td>
-                                        <Link
-                                            to={`/admin/financial/updateIncome/${item._id}`}
-                                            className="btn btn-sm btn-primary me-2"
-                                        >
-                                            Update
-                                        </Link>
                                         <button
-                                            className="btn btn-sm btn-danger"
-                                            onClick={() => handleDelete(item._id)}
+                                            className="btn btn-sm btn-primary me-2"
+                                            onClick={() => handleViewOrder(item)}
                                         >
-                                            Delete
+                                            View
                                         </button>
                                     </td>
                                 </tr>
@@ -131,6 +155,31 @@ const Incomes = () => {
                     </button>
                 </div>
             </div>
+
+            {/* Modal */}
+            {selectedOrder && (
+                <div className={`modal ${showModal ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Order Details</h5>
+                                <button type="button" className="btn-close" onClick={handleCloseModal} aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Order ID: {selectedOrder.orderID}</p>
+                                <p>Customer ID: {selectedOrder.customer}</p>
+                                <p>Order Date: {selectedOrder.createdAt}</p>
+                                <p>Product ID: {selectedOrder.products.product}</p>
+                                <p>Quantity: {selectedOrder.products.quantity}</p>
+                                <p>Total Amount: {selectedOrder.products.price}</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AdminLayout>
     );
 };
