@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PageTopBanner from '../components/common/PageTopBanner';
-import StripeCheckout from 'react-stripe-checkout'; // Import Stripe Checkout component
+import StripeCheckout from 'react-stripe-checkout';
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const Checkout = () => {
     const [errors, setErrors] = useState({});
@@ -13,6 +14,8 @@ const Checkout = () => {
     const quantity = queryParams.get('quantity');
     const totalAmount = queryParams.get('totalAmount');
 
+    const { user } = useAuthContext();
+
     // Get additional details.
     const businessName = queryParams.get('businessName');
     const address = queryParams.get('address');
@@ -20,16 +23,6 @@ const Checkout = () => {
     const description = queryParams.get('description');
 
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const loggedInUserData = JSON.parse(localStorage.getItem('email'));
-        if (loggedInUserData && loggedInUserData.user && loggedInUserData.user.email) {
-            const loggedInUserEmail = loggedInUserData.user.email;
-            setUserEmail(loggedInUserEmail);
-        }
-    }, []);
-
-    console.log("User email : " + userEmail);
 
     const [shippingDetails, setShippingDetails] = useState({
         fullName: '',
@@ -70,8 +63,7 @@ const Checkout = () => {
     const handleToken = async (token) => {
         try {
             const orderData = {
-                customer: 'hweranmadhuka@gmail.com',
-                // customer: '663493b3cbe53c571da7b99c',
+                customer: user.email,
                 products: {
                     product: productId,
                     quantity: quantity,

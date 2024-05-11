@@ -3,15 +3,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import EmployeeLayout from "../../Layouts/EmployeeLayout";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../../hooks/useAuthContext";
 
 const EmployeeLeaves = () => {
   const [employeeLeaves, setEmployeeLeaves] = useState([]);
 
-  useEffect(() => {
-    const employeeId = 'EMP04136495';
+  const { user } = useAuthContext();
 
+  useEffect(() => {
     axios
-      .get(`http://localhost:5000/employeeLeave/employeeLeaves/${employeeId}`)
+      .get(`http://localhost:5000/employeeLeave/getLeaveByEmail/${user.email}`)
       .then((result) => setEmployeeLeaves(result.data))
       .catch((err) => console.log(err));
   }, []);
@@ -43,10 +44,15 @@ const EmployeeLeaves = () => {
     <>
       <EmployeeLayout>
         <div className="bg-white p-3 mt-2">
-          <h3 className='fs-5 fw-bold'>Leaves</h3>
+          <h3 className="fs-5 fw-bold">Leaves</h3>
           <div className="d-flex align-items-center justify-content-between border-bottom py-3">
             <form className="d-flex" role="search">
-              <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+              <input
+                className="form-control me-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
             </form>
             <Link to="/employee/addLeave">
               <button type="button" className="btn btn-primary">
@@ -76,7 +82,9 @@ const EmployeeLeaves = () => {
                   <td>{item.type}</td>
                   {/* <td>{item.status}</td> */}
                   <td>
-                    <span className={getStatusBadgeClass(item.status)}>{item.status}</span>
+                    <span className={getStatusBadgeClass(item.status)}>
+                      {item.status}
+                    </span>
                   </td>
                   <td>
                     <Link to={`/employee/updateLeave/${item._id}`}>

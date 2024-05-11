@@ -53,6 +53,12 @@ const AddEmployee = () => {
     }
     if (!password) {
       errors.password = "Password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters long";
+    } else if (!/(?=.*[A-Z])/.test(password)) {
+      errors.password = "Password must contain at least one capital letter";
+    } else if (!/(?=.[!@#$%^&])/.test(password)) {
+      errors.password = "Password must contain at least one special character";
     }
     if (!designation) {
       errors.designation = "Designation is required";
@@ -62,40 +68,36 @@ const AddEmployee = () => {
     }
 
     if (Object.keys(errors).length === 0) {
-      // Proceed with form submission
-      Swal.fire("Employee added successfully!");
-      setErrors({});
+      axios
+        .post("http://localhost:5000/employees/createEmp", {
+          fname,
+          lname,
+          gender,
+          birthDate,
+          address,
+          email,
+          phone,
+          username,
+          password,
+          designation,
+          department,
+        })
+        .then((result) => {
+          console.log(result);
+          Swal.fire("Employee added successfully!");
+          navigate("/admin/employees");
+        })
+        .catch((err) => console.log(err));
     } else {
       setErrors(errors);
     }
-
-    axios
-      .post("http://localhost:5000/employees/createEmp", {
-        fname,
-        lname,
-        gender,
-        birthDate,
-        address,
-        email,
-        phone,
-        username,
-        password,
-        designation,
-        department,
-      })
-      .then((result) => {
-        console.log(result);
-        navigate("/admin/employees");
-      })
-
-      .catch((err) => console.log(err));
   };
 
   return (
     <>
       <AdminLayout>
         <div className="bg-white p-3 mt-2">
-          <h3 className='fs-5 fw-bold mb-4'>Add Employee</h3>
+          <h3 className="fs-5 fw-bold mb-4">Add Employee</h3>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="fName" className="form-label">
@@ -135,7 +137,7 @@ const AddEmployee = () => {
                 id="gender"
                 onChange={(e) => setGender(e.target.value)}
               >
-                <option selected>Select Gender</option>
+                <option selected>Select</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
@@ -152,7 +154,7 @@ const AddEmployee = () => {
                 type="date"
                 className="form-control"
                 id="birthDate"
-                required
+                // required
                 onChange={(e) => setBirthDate(e.target.value)}
               />
               {errors.birthDate && (

@@ -73,6 +73,12 @@ const UpdateEmployee = () => {
     }
     if (!password) {
       errors.password = "Password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters long";
+    } else if (!/(?=.*[A-Z])/.test(password)) {
+      errors.password = "Password must contain at least one capital letter";
+    } else if (!/(?=.[!@#$%^&])/.test(password)) {
+      errors.password = "Password must contain at least one special character";
     }
     if (!designation) {
       errors.designation = "Designation is required";
@@ -82,33 +88,29 @@ const UpdateEmployee = () => {
     }
 
     if (Object.keys(errors).length === 0) {
-      // Proceed with form submission
-      alert("Form submitted successfully!");
-      setErrors({});
+      axios
+        .put("http://localhost:5000/employees/updateEmployee/" + id, {
+          fname,
+          lname,
+          gender,
+          birthDate,
+          address,
+          email,
+          phone,
+          username,
+          password,
+          designation,
+          department,
+        })
+        .then((result) => {
+          console.log(result);
+          navigate("/admin/employees");
+        })
+
+        .catch((err) => console.log(err));
     } else {
       setErrors(errors);
     }
-
-    axios
-      .put("http://localhost:5000/employees/updateEmployee/" + id, {
-        fname,
-        lname,
-        gender,
-        birthDate,
-        address,
-        email,
-        phone,
-        username,
-        password,
-        designation,
-        department,
-      })
-      .then((result) => {
-        console.log(result);
-        navigate("/admin/employees");
-      })
-
-      .catch((err) => console.log(err));
   };
 
   return (

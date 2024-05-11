@@ -48,7 +48,7 @@ const Leaves = () => {
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">Employee ID</th>
+                                <th scope="col">Employee Email</th>
                                 <th scope="col">Reason</th>
                                 <th scope="col">From</th>
                                 <th scope="col">To</th>
@@ -61,7 +61,7 @@ const Leaves = () => {
                             {employee.map((item) => {
                                 return (
                                     <tr>
-                                        <td>{item.eid}</td>
+                                        <td>{item.userEmail}</td>
                                         <td>{item.reason}</td>
                                         <td>{item.from}</td>
                                         <td>{item.to}</td>

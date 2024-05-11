@@ -4,7 +4,7 @@ import LoginImg from "../assets/images/login.png";
 import axios from "axios";
 import { useAuthContext } from "../hooks/useAuthContext";
 
-const Login = () => {
+const Emplogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -25,7 +25,7 @@ const Login = () => {
     }
 
     axios
-      .post("http://localhost:5000/auth/login", { email, password })
+      .post("http://localhost:5000/employees/emplogin", { email, password })
 
       .then((response) => {
         const { data } = response;
@@ -36,13 +36,8 @@ const Login = () => {
           // Redirect the user based on their role
           const { role } = response.data;
           console.log(response.data);
-          switch (role) {
-            case "admin":
-              window.location.href = "/admin";
-              break;
-            default:
-              window.location.href = "/";
-          }
+
+          navigate("/employee/" + email);
         } else {
           console.log(response);
           setError("Incorrect email or password");
@@ -122,4 +117,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Emplogin;

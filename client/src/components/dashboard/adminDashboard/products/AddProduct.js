@@ -12,6 +12,7 @@ const AddProduct = () => {
         pprice: '',
         image: null
     });
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,14 +27,23 @@ const AddProduct = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        // Clear errors on new input
+        if (errors[e.target.name]) {
+            setErrors(prev => ({ ...prev, [e.target.name]: null }));
+        }
     };
 
     const handleImageChange = (e) => {
         setFormData({ ...formData, image: e.target.files[0] });
+        if (errors['image']) {
+            setErrors(prev => ({ ...prev, 'image': null }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return; // Stop the submission if there are errors
+
         const formDataToSend = new FormData();
         formDataToSend.append('pname', formData.pname);
         formDataToSend.append('pcategory', formData.pcategory);
@@ -62,6 +72,23 @@ const AddProduct = () => {
         }
     };
 
+    const validate = () => {
+        let newErrors = {};
+        if (!formData.pname.trim()) newErrors.pname = 'Product name is required';
+        if (!formData.pcategory.trim()) newErrors.pcategory = 'Category is required';
+        if (!formData.description.trim()) newErrors.description = 'Description is required';
+        if (!formData.pprice.trim()) newErrors.pprice = 'Price is required';
+        if (!formData.image) newErrors.image = 'Product image is required';
+
+        // Price validation
+        if (!/^\d+(\.\d{1,2})?$/.test(formData.pprice)) {
+            newErrors.pprice = 'Invalid price format';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     return (
         <AdminLayout>
             <div className="bg-white p-3 mt-2">
@@ -70,6 +97,7 @@ const AddProduct = () => {
                     <div className="mb-3">
                         <label htmlFor="pname" className="form-label">Product Name</label>
                         <input type="text" className="form-control" id="pname" name="pname" value={formData.pname} onChange={handleChange} />
+                        {errors.pname && <div className="text-danger">{errors.pname}</div>}
                     </div>
                     <div className="mb-3">
                         <label htmlFor="pcategory" className="form-label">Category</label>
@@ -79,18 +107,22 @@ const AddProduct = () => {
                                 <option key={category._id} value={category.cname}>{category.cname}</option>
                             ))}
                         </select>
+                        {errors.pcategory && <div className="text-danger">{errors.pcategory}</div>}
                     </div>
                     <div className="mb-3">
                         <label htmlFor="description" className="form-label">Description</label>
                         <textarea className="form-control" id="description" name="description" value={formData.description} onChange={handleChange}></textarea>
+                        {errors.description && <div className="text-danger">{errors.description}</div>}
                     </div>
                     <div className="mb-3">
                         <label htmlFor="pprice" className="form-label">Price</label>
                         <input type="text" className="form-control" id="pprice" name="pprice" value={formData.pprice} onChange={handleChange} />
+                        {errors.pprice && <div className="text-danger">{errors.pprice}</div>}
                     </div>
                     <div className="mb-3">
                         <label htmlFor="image" className="form-label">Image</label>
                         <input type="file" className="form-control" id="image" name="image" onChange={handleImageChange} />
+                        {errors.image && <div className="text-danger">{errors.image}</div>}
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>

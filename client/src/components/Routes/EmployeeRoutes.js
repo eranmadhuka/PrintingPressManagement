@@ -10,7 +10,7 @@ import UpdateLeaves from "../dashboard/employeeDashboard/UpdateLeaves";
 const EmployeeRoutes = () => {
     return (
         <Routes>
-            <Route path="/" element={<EmployeeDashboard />} />
+            <Route path="/:email" element={<EmployeeDashboard />} />
             <Route path="/leaves" element={<EmployeeLeaves />} />
             <Route path="/attendance" element={<EmployeeAttendance />} />
             <Route path="/addLeave" element={<AddLeave />} />
