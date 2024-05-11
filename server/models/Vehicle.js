@@ -20,7 +20,7 @@ const generateVehicleID = () => {
   const month = months[now.getMonth()];
   const date = ("0" + now.getDate()).slice(-2);
   const randomNumber = Math.floor(Math.random() * 9000) + 1000;
-  return VEH${ month }${ date }${ randomNumber };
+  return `VEH${month}${date}${randomNumber}`;
 };
 
 const VehicleSchema = new mongoose.Schema({

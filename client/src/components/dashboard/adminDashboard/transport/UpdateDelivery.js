@@ -144,26 +144,22 @@ const CreateDelivery = () => {
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="employeeid" className="form-label">
-                Employee Id
+                Employee ID
               </label>
-              <select
-                className={`form-select ${employeeIdError ? "is-invalid" : ""}`}
+              <input
+                type="text"
+                className={`form-control ${employeeIdError ? "is-invalid" : ""
+                  }`}
                 id="employeeid"
                 value={employeeId}
                 onChange={(e) => setEmployeeId(e.target.value)}
-              >
-                <option value="">Select Employee</option>
-                {employees.map((employeeId) => (
-                  <option key={employeeId} value={employeeId}>
-                    {employeeId}
-                  </option>
-                ))}
-              </select>
-
+                placeholder="Enter Employee ID"
+              />
               {employeeIdError && (
                 <div className="invalid-feedback">{employeeIdError}</div>
               )}
             </div>
+
             <div className="mb-3">
               <label htmlFor="vehicleid" className="form-label">
                 Vehicle Id
@@ -176,8 +172,8 @@ const CreateDelivery = () => {
               >
                 <option value="">Select Vehicle</option>
                 {vehicles.map((vehicle) => (
-                  <option key={vehicle._id} value={vehicle._id}>
-                    {vehicle._id}
+                  <option key={vehicle.vehicleID} value={vehicle.vehicleID}>
+                    {vehicle.vehicleID}
                   </option>
                 ))}
               </select>
@@ -207,9 +203,8 @@ const CreateDelivery = () => {
               </label>
               <input
                 type="text"
-                className={`form-control ${
-                  customerIdError ? "is-invalid" : ""
-                }`}
+                className={`form-control ${customerIdError ? "is-invalid" : ""
+                  }`}
                 id="customerid"
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
@@ -236,9 +231,8 @@ const CreateDelivery = () => {
             <div className="mb-3 form-check">
               <input
                 type="checkbox"
-                className={`form-check-input ${
-                  confirmedError ? "is-invalid" : ""
-                }`}
+                className={`form-check-input ${confirmedError ? "is-invalid" : ""
+                  }`}
                 id="confirmed"
                 checked={confirmed}
                 onChange={(e) => setConfirmed(e.target.checked)}

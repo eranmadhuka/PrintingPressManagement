@@ -17,7 +17,7 @@ const Delivery = () => {
   const [filteredDelivery, setFilteredDelivery] = useState([]);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [driverMessages, setDriverMessages] = useState([]);
-  const [latestMessage, setLatestMessage] = useState("");
+  const [filteredContactDrivers, setFilteredContactDrivers] = useState([]);
 
   useEffect(() => {
     const fetchDeliveryData = async () => {
@@ -46,13 +46,17 @@ const Delivery = () => {
           "http://localhost:5000/employees/drivers/details"
         );
         setContactDrivers(response.data);
+        // Assuming response.data is an array of drivers
+        response.data.forEach((driver) => {
+          console.log(driver._id); // Printing _id for each driver
+        });
       } catch (error) {
         console.error("Error fetching drivers:", error);
       }
     };
 
-    fetchDrivers();
-  }, []);
+    fetchDrivers(); // Call the fetchDrivers function
+  }, []); // Empty dependency array to ensure the effect runs only once
 
   const prepareProductStatusDataForPieChart = (data) => {
     const productStatusCounts = {};
@@ -78,18 +82,37 @@ const Delivery = () => {
     } else {
       const filteredData = delivery.filter(
         (item) =>
-          item.driverId.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          item.vehicleId.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          item.productId.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          item.customerId.toLowerCase().includes(e.target.value.toLowerCase())
+          (item.driverId &&
+            item.driverId
+              .toLowerCase()
+              .includes(e.target.value.toLowerCase())) ||
+          (item.vehicleId &&
+            item.vehicleId
+              .toLowerCase()
+              .includes(e.target.value.toLowerCase())) ||
+          (item.productId &&
+            item.productId
+              .toLowerCase()
+              .includes(e.target.value.toLowerCase())) ||
+          (item.customerId &&
+            item.customerId
+              .toLowerCase()
+              .includes(e.target.value.toLowerCase()))
       );
       setFilteredDelivery(filteredData);
     }
   };
 
-  const handleContactDriversSearchChange = (e) => {
-    setContactDriversSearchQuery(e.target.value);
-  };
+  // const handleContactDriversSearchChange = (e) => {
+  //   const searchQuery = e.target.value.toLowerCase();
+  //   setContactDriversSearchQuery(searchQuery);
+  //   const filteredData = contactDrivers.filter(
+  //     (driver) =>
+  //       driver._id.toLowerCase().includes(searchQuery) ||
+  //       `${driver.fname} ${driver.lname}`.toLowerCase().includes(searchQuery)
+  //   );
+  //   setFilteredContactDrivers(filteredData);
+  // };
 
   const updateProductStatus = async (newStatus, id) => {
     try {
@@ -160,24 +183,32 @@ const Delivery = () => {
     }
   };
 
-  const openPopup = async (driver) => {
-    setSelectedDriver(driver);
-    try {
-      const response = await axios.get("/api/latestmessage", {
-        params: { employeeId: driver._id },
-      });
-      console.log("Latest message response:", response.data);
-      setLatestMessage(response.data.text);
-    } catch (error) {
-      console.error("Error fetching latest message:", error);
-    }
-  };
+  // const openPopup = async (driver) => {
+  //   try {
+  //     const response = await axios.get(
+  //       "http://localhost:5000/api/messages/" + driver._id
+  //     );
+  //     console.log("Messages for the selected driver:", response.data);
+
+  //     // Accumulate the text of each message into a single string
+
+  //     Swal.fire({
+  //       title: `${driver.fname} ${driver.lname}`,
+  //       text: response.data,
+  //       icon: "success",
+  //       confirmButtonText: "Close",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error fetching messages:", error);
+  //     Swal.fire("", "No messages. Please try again later.", "error");
+  //   }
+  // };
 
   // Function to close pop-up
-  const closePopup = () => {
-    setSelectedDriver(null);
-    setDriverMessages([]);
-  };
+  // const closePopup = () => {
+  //   setSelectedDriver(null);
+  //   setDriverMessages([]);
+  // };
 
   return (
     <AdminLayout>
@@ -266,7 +297,7 @@ const Delivery = () => {
           {/* Adjusted width */}
           <h3 className="fs-5 fw-bold">Contact Drivers</h3>
           <div className="d-flex align-items-center justify-content-between border-bottom py-3">
-            <form className="d-flex" role="search">
+            {/* <form className="d-flex" role="search">
               <input
                 className="form-control me-2"
                 type="search"
@@ -275,7 +306,7 @@ const Delivery = () => {
                 value={contactDriversSearchQuery}
                 onChange={handleContactDriversSearchChange}
               />
-            </form>
+            </form> */}
           </div>
           <table className="table">
             <thead>
@@ -284,7 +315,7 @@ const Delivery = () => {
                 <th scope="col">Employee ID</th>
                 <th scope="col">Name</th>
                 <th scope="col">Contact</th>
-                <th scope="col">Messages</th>
+                {/* <th scope="col">Messages</th> */}
               </tr>
             </thead>
             <tbody>
@@ -294,37 +325,20 @@ const Delivery = () => {
                   <td>{driver._id}</td>
                   <td>{`${driver.fname} ${driver.lname}`}</td>
                   <td>{driver.phone}</td>
-                  <td>
-                    <td>
-                      <button
-                        className="btn btn-outline-success"
-                        onClick={() => openPopup(driver)}
-                      >
-                        View
-                      </button>
-                    </td>{" "}
-                  </td>
+                  {/* <td>
+                    <button
+                      className="btn btn-outline-success"
+                      onClick={() => openPopup(driver)}
+                    >
+                      View
+                    </button>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        {selectedDriver && (
-          <div className="popup">
-            <div className="popup-inner">
-              <h2>Message</h2>
 
-              <p>Name: {`${selectedDriver.fname} ${selectedDriver.lname}`}</p>
-
-              <ul>
-                {driverMessages.map((message, index) => (
-                  <li key={index}>{message.text}</li>
-                ))}
-              </ul>
-              <button onClick={closePopup}>Close</button>
-            </div>
-          </div>
-        )}
         {/* Product Status Distribution Pie Chart */}
         <div style={{ width: "48%" }}>
           {" "}
