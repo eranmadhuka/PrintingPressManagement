@@ -5,34 +5,59 @@ import axios from 'axios';
 
 const Salaries = () => {
     const [salaries, setSalaries] = useState([]);
-    const [totalSalary, setTotalSalary] = useState(0); // State for total salary
+    const [totalSalary, setTotalSalary] = useState(0);
+    const [otRate, setOtRate] = useState('');
+    const [otHours, setOtHours] = useState({});
 
     useEffect(() => {
         axios.get("http://localhost:5000/financial/empFinancial/getEmployeeDetails")
             .then((result) => {
                 setSalaries(result.data);
-                // Calculate total salary when salaries are fetched
-                const total = result.data.reduce((acc, salary) => acc + salary.netSalary, 0);
+                const total = result.data.reduce((acc, salary) => acc + salary.salary?.basicSalary, 0);
                 setTotalSalary(total);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+        // Fetch OT hours data from the attendance API endpoint
+        axios.get("http://localhost:5000/attendance/getAllAttendance")
+            .then((response) => {
+                const otData = response.data.reduce((acc, entry) => {
+                    acc[entry.EmpEmail] = entry.Overtime;
+                    return acc;
+                }, {});
+                setOtHours(otData);
             })
             .catch((error) => {
                 console.log(error);
             });
     }, []);
 
+    const calculateTotalIncomeAmount = () => {
+        return salaries.reduce((acc, x) => {
+            const netSalary = ((otHours[x.email] || 0) * parseFloat(otRate)) + (x.salary?.basicSalary || 0);
+            return acc + netSalary;
+        }, 0);
+    };
+
     const sendTotalIncome = () => {
-        console.log("Sending total income...");
-        axios.post("http://localhost:5000/financial/empFinancial/createLPSEntry", {
+        const totalIncomeAmount = calculateTotalIncomeAmount();
+        axios.post("http://localhost:5000/financial/createLPSEntry", {
             description: "Total Salary",
             entryType: "expense",
-            date: new Date().toISOString(), // Assuming today's date
-            amount: totalSalary,
+            date: new Date().toISOString(),
+            amount: totalIncomeAmount,
+            otRate: otRate,
         })
             .then((result) => {
                 console.log("Total income sent successfully:", result);
-                // Handle navigation or any other action after successful submission
             })
             .catch((err) => console.log("Error sending total income:", err));
+    };
+
+    const handleSetOtRate = () => {
+        setOtRate(otRate);
     };
 
     return (
@@ -46,30 +71,36 @@ const Salaries = () => {
                                 <th>Name</th>
                                 <th>Designation</th>
                                 <th>Department</th>
-                                {/* <th>Gross Salary</th> */}
-                                <th>Net Salary</th>
-                                <th>Action</th>
+                                <th>OT Hours</th>
+                                <th>Basic Salary</th>
+                                <th>Total Salary</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {salaries.map((salary, index) => (
+                            {salaries.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{salary._id}</td>
-                                    <td>{salary.fname}</td>
-                                    <td>{salary.designation}</td>
-                                    <td>{salary.department}</td>
-                                    {/* <td>{salary.grossSalary}</td> */}
-                                    <td>{salary.netSalary}</td>
-                                    <td>
-                                        <Link to={`/admin/financial/emForm/${salary._id}`}>
-                                            <button className="btn btn-sm btn-primary me-2">Update</button>
-                                        </Link>
-                                        <button className="btn btn-sm btn-danger">Delete</button>
-                                    </td>
+                                    <td>{item.email}</td>
+                                    <td>{item.fname}</td>
+                                    <td>{item.designation}</td>
+                                    <td>{item.department}</td>
+                                    <td>{otHours[item.email] || 'N/A'}</td>
+                                    <td>{item.salary?.basicSalary}</td>
+                                    <td>{((otHours[item.email] || 0) * parseFloat(otRate)) + (item.salary?.basicSalary || 0)}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                    <div className="mb-3 d-flex align-items-center">
+                        <label htmlFor="otRate" className="form-label me-2">OT Rate:</label>
+                        <input
+                            type="text"
+                            className="form-control me-2"
+                            id="otRate"
+                            value={otRate}
+                            onChange={(e) => setOtRate(e.target.value)}
+                        />
+                        <button className="btn btn-primary" onClick={handleSetOtRate}>Set</button>
+                    </div>
                 </div>
             </div>
 
@@ -92,14 +123,13 @@ const Salaries = () => {
                             </tr>
                             <tr>
                                 <th>Amount</th>
-                                <td>{totalSalary}</td>
+                                <td>{calculateTotalIncomeAmount()}</td>
                             </tr>
                         </tbody>
                     </table>
                     <button type="button" className="btn btn-primary" onClick={sendTotalIncome}>Add to Loss or Profit</button>
                 </div>
             </div>
-
         </AdminLayout>
     );
 };

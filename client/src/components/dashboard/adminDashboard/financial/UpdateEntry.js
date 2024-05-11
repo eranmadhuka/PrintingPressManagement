@@ -14,7 +14,7 @@ const Update = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/financial/getdetails/` + id)
+      .get('http://localhost:5000/financial/getdetails/' + id)
       .then((result) => {
         console.log(result);
         setDescription(result.data.description);
@@ -38,7 +38,7 @@ const Update = () => {
     e.preventDefault();
     if (!validateForm()) return;
     axios
-      .put(`http://localhost:5000/financial/updateUser/` + id, {
+      .put('http://localhost:5000/financial/updateUser/' + id, {
         description,
         entryType,
         date,

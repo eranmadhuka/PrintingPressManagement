@@ -22,7 +22,6 @@ const LostProfit = () => {
       });
   }, []);
 
-
   // Function to delete an entry
   const handleDelete = (id) => {
     axios
@@ -36,7 +35,8 @@ const LostProfit = () => {
 
   // Filter entries based on search query
   const filteredEntries = entries.filter((entry) =>
-    entry._id.toLowerCase().includes(searchQuery.toLowerCase())
+    entry.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    entry.date.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Filter expenses and revenues
@@ -79,7 +79,7 @@ const LostProfit = () => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search by ID"
+              placeholder="Search by Date or Description"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -158,12 +158,12 @@ const LostProfit = () => {
             <h4>Profit/Loss: {profitLoss}</h4>
           </div>
 
-          {/* Pie Chart */}
+          {/* Pie Chart  */}
           <div style={{ height: "300px", width: "300px", margin: "auto" }}>
             <Pie data={pieChartData} />
           </div>
-        </div>
-      </AdminLayout>
+        </div >
+      </AdminLayout >
     </>
   );
 };
