@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 const Salaries = () => {
     const [salaries, setSalaries] = useState([]);
     const [totalSalary, setTotalSalary] = useState(0);
     const [otRate, setOtRate] = useState('');
     const [otHours, setOtHours] = useState({});
+    const [isFetching, setIsFetching] = useState(false);
+    const [isDataAdded, setIsDataAdded] = useState(false);
 
     useEffect(() => {
         axios.get("http://localhost:5000/financial/empFinancial/getEmployeeDetails")
@@ -42,18 +45,38 @@ const Salaries = () => {
     };
 
     const sendTotalIncome = () => {
+        setIsFetching(true);
         const totalIncomeAmount = calculateTotalIncomeAmount();
-        axios.post("http://localhost:5000/financial/createLPSEntry", {
-            description: "Total Salary",
-            entryType: "expense",
-            date: new Date().toISOString(),
-            amount: totalIncomeAmount,
-            otRate: otRate,
-        })
-            .then((result) => {
-                console.log("Total income sent successfully:", result);
-            })
-            .catch((err) => console.log("Error sending total income:", err));
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action will add the total salary to the Loss or Profit entries.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, add it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post("http://localhost:5000/financial/createLPSEntry", {
+                    description: "Total Salary",
+                    entryType: "expense",
+                    date: new Date().toISOString(),
+                    amount: totalIncomeAmount,
+                    otRate: otRate,
+                })
+                    .then((result) => {
+                        console.log("Total income sent successfully:", result);
+                        setIsDataAdded(true);
+                        setIsFetching(false);
+                    })
+                    .catch((err) => {
+                        console.log("Error sending total income:", err);
+                        setIsFetching(false);
+                    });
+            } else {
+                setIsFetching(false);
+            }
+        });
     };
 
     const handleSetOtRate = () => {

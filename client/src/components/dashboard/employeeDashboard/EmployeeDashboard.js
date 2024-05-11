@@ -22,12 +22,18 @@ const EmployeeDashboard = () => {
   const [employeeLeaves, setEmployeeLeaves] = useState([]);
 
   useEffect(() => {
-    const employeeId = empID;
-    axios
-      .get(`http://localhost:5000/employeeLeave/employeeLeaves/${employeeId}`)
-      .then((result) => setEmployeeLeaves(result.data))
-      .catch((err) => console.log(err));
-  }, []);
+    if (user && user.email) {
+      const employeeId = user.email;
+      axios
+        .get(`http://localhost:5000/employeeLeave/getLeaveByEmail/${employeeId}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
+        .then((result) => setEmployeeLeaves(result.data))
+        .catch((err) => console.log(err));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -52,7 +58,9 @@ const EmployeeDashboard = () => {
           setEmpID(result.data.empID);
         });
     }
-  }, []);
+  }, [user]);
+
+  const approvedLeaves = employeeLeaves.filter(leave => leave.status === 'Approved');
 
   return (
     <>
@@ -71,15 +79,8 @@ const EmployeeDashboard = () => {
             </div>
             <div className="col-lg-3">
               <Card
-                title="Total Products"
-                number="50"
-                icon={<i className="bi bi-people-fill"></i>}
-              />
-            </div>
-            <div className="col-lg-3">
-              <Card
-                title="Total Orders"
-                number="50"
+                title="Approved Leaves"
+                number={approvedLeaves.length}
                 icon={<i className="bi bi-people-fill"></i>}
               />
             </div>

@@ -46,14 +46,14 @@ const EmployeeLeaves = () => {
         <div className="bg-white p-3 mt-2">
           <h3 className="fs-5 fw-bold">Leaves</h3>
           <div className="d-flex align-items-center justify-content-between border-bottom py-3">
-            <form className="d-flex" role="search">
+            {/* <form className="d-flex" role="search">
               <input
                 className="form-control me-2"
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
               />
-            </form>
+            </form> */}
             <Link to="/employee/addLeave">
               <button type="button" className="btn btn-primary">
                 Request Leave
@@ -63,7 +63,6 @@ const EmployeeLeaves = () => {
           <table className="table">
             <thead>
               <tr>
-                <th scope="col">ID</th>
                 <th scope="col">Reason</th>
                 <th scope="col">From</th>
                 <th scope="col">To</th>
@@ -75,7 +74,6 @@ const EmployeeLeaves = () => {
             <tbody>
               {employeeLeaves.map((item) => (
                 <tr key={item._id}>
-                  <td>{item.eid}</td>
                   <td>{item.reason}</td>
                   <td>{item.from}</td>
                   <td>{item.to}</td>

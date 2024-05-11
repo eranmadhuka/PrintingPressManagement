@@ -17,9 +17,7 @@ const ProductDetail = () => {
         pprice: "",
         image: ""
     });
-    const [selectedSize, setSelectedSize] = useState("");
     const [selectedQuantity, setSelectedQuantity] = useState(1);
-    const [selectedColor, setSelectedColor] = useState("");
     const [selectedMaterial, setSelectedMaterial] = useState("");
     const [totalPrice, setTotalPrice] = useState(0);
 

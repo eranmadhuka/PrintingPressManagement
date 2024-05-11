@@ -3,12 +3,17 @@ import axios from "axios";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx"; // Importing XLSX package
+import PieChart from "../../../charts/PieChart"; // Import your PieChart component
 
 const RawMaterials = () => {
+  // State for holding the list of raw materials
   const [rawmaterials, setRawMaterials] = useState([]);
+  // State for holding the search query
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true); // Initially disable submit button
+  // State for holding the data for the pie chart
+  const [pieChartData, setPieChartData] = useState([]);
 
+  // useEffect hook to fetch the list of raw materials when the component mounts
   useEffect(() => {
     axios
       .get("http://localhost:5000/raw/")
@@ -16,20 +21,32 @@ const RawMaterials = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  // useEffect hook to calculate data for the pie chart when raw materials change
   useEffect(() => {
-    // Check if any raw material has invalid unit price or total amount
-    const hasInvalidData = rawmaterials.some(
-      (rawMaterial) =>
-        isNaN(parseFloat(rawMaterial.unitPrice)) ||
-        isNaN(parseFloat(rawMaterial.totalAmount)) ||
-        parseFloat(rawMaterial.unitPrice) < 0 ||
-        parseFloat(rawMaterial.totalAmount) < 0
-    );
+    // Process raw materials data to calculate daily count
+    const dailyCount = calculateDailyCount(rawmaterials);
+    // Set pie chart data
+    setPieChartData(dailyCount);
+  }, [rawmaterials]);
 
-    // Set submit button disabled state based on validation result
-    setIsSubmitDisabled(hasInvalidData);
-  }, [rawmaterials]); // Re-run validation when rawmaterials change
+  // Function to calculate daily count of raw materials
+  const calculateDailyCount = (data) => {
+    const dailyCountMap = new Map();
+    data.forEach((item) => {
+      const date = new Date(item.date).toLocaleDateString();
+      if (dailyCountMap.has(date)) {
+        dailyCountMap.set(date, dailyCountMap.get(date) + 1);
+      } else {
+        dailyCountMap.set(date, 1);
+      }
+    });
+    return Array.from(dailyCountMap.entries()).map(([date, count]) => ({
+      date,
+      count,
+    }));
+  };
 
+  // Function to handle deletion of a raw material
   const handleDelete = (id) => {
     axios
       .delete("http://localhost:5000/raw/deleteRawMaterials/" + id)
@@ -40,6 +57,7 @@ const RawMaterials = () => {
       .catch((err) => console.log(err));
   };
 
+  // Function to export raw materials data to Excel
   const exportToExcel = () => {
     // Filtered array containing only specific fields
     const filteredRawMaterials = rawmaterials.map(
@@ -82,7 +100,7 @@ const RawMaterials = () => {
 
   const sendEmailToSupplier = (supplierEmail) => {
     // Compose the mailto link with the recipient's email address
-    const mailtoLink = `mailto:${supplierEmail}`;
+    const mailtoLink = `mailto: ${supplierEmail}`;
 
     // Open the default email application with the mailto link
     window.location.href = mailtoLink;
@@ -99,7 +117,7 @@ const RawMaterials = () => {
               <input
                 className="form-control me-2"
                 type="search"
-                placeholder="Search"
+                placeholder="Search by product Name"
                 aria-label="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -150,7 +168,7 @@ const RawMaterials = () => {
 
                   <td>
                     <Link
-                      to={`/admin/suppliers/update-orders/${rawMaterial._id}`}
+                      to={`/admin/suppliers / update - orders / ${rawMaterial._id}`}
                     >
                       <button className="btn btn-dark me-2">
                         <i className="bi bi-pencil-square"></i>
@@ -175,8 +193,23 @@ const RawMaterials = () => {
               ))}
             </tbody>
           </table>
+          <div className="mt-3">
+            <div className="row">
+              <div className="col-lg-5">
+                <div className="card border-0 p-3">
+                  <div className="card-body">
+                    <h2 className="card-title float-left fs-5 fw-bold">
+                      Daily Supplier Order Count
+                    </h2>
+                    {/* Render the PieChart component passing feedbackData */}
+                    <PieChart data={pieChartData} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </AdminLayout>
+      </AdminLayout >
     </>
   );
 };

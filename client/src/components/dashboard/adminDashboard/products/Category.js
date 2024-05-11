@@ -119,14 +119,14 @@ export default class Category extends Component {
                                         </td>
                                         <td>{category.description}</td>
                                         <td>
-                                            <Link to={`/admin/products/editCategory/${category._id}`} className="btn btn-warning">
-                                                <i className="fas fa-edit"></i>&nbsp;Edit
+                                            <Link to={`/admin/products/editCategory/${category._id}`}>
+                                                <i className="bi bi-pencil-square text-primary me-3"></i>
                                             </Link>
 
-                                            &nbsp;
-                                            <button className="btn btn-danger" onClick={() => this.onDelete(category._id)}>
-                                                <i className="fas fa-trash-alt"></i>&nbsp;Delete
-                                            </button>
+                                            <i className="bi bi-trash-fill text-danger"
+                                                onClick={() => this.onDelete(category._id)}
+                                            ></i>
+
                                         </td>
                                     </tr>
                                 ))}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AdminLayout from '../../../Layouts/AdminLayout'
+import AdminLayout from '../../../Layouts/AdminLayout';
 import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
@@ -13,6 +13,7 @@ const AddProduct = () => {
         image: null
     });
     const [errors, setErrors] = useState({});
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,7 +21,7 @@ const AddProduct = () => {
             .get("http://localhost:5000/api/categories")
             .then((result) => {
                 console.log(result.data);
-                setCategories(result.data.existingCategories); // Set categories state to the array of category objects
+                setCategories(result.data.existingCategories);
             })
             .catch((err) => console.log(err));
     }, []);
@@ -37,38 +38,6 @@ const AddProduct = () => {
         setFormData({ ...formData, image: e.target.files[0] });
         if (errors['image']) {
             setErrors(prev => ({ ...prev, 'image': null }));
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validate()) return; // Stop the submission if there are errors
-
-        const formDataToSend = new FormData();
-        formDataToSend.append('pname', formData.pname);
-        formDataToSend.append('pcategory', formData.pcategory);
-        formDataToSend.append('description', formData.description);
-        formDataToSend.append('pprice', formData.pprice);
-        formDataToSend.append('image', formData.image);
-
-        try {
-            const res = await axios.post('http://localhost:5000/products/add', formDataToSend, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            console.log(res.data);
-            // Reset form fields after successful submission
-            setFormData({
-                pname: '',
-                pcategory: '',
-                description: '',
-                pprice: '',
-                image: null
-            });
-            navigate("/admin/products");
-        } catch (err) {
-            console.error(err);
         }
     };
 
@@ -89,8 +58,48 @@ const AddProduct = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validate()) return;
+
+        const formDataToSend = new FormData();
+        formDataToSend.append('pname', formData.pname);
+        formDataToSend.append('pcategory', formData.pcategory);
+        formDataToSend.append('description', formData.description);
+        formDataToSend.append('pprice', formData.pprice);
+        formDataToSend.append('image', formData.image);
+
+        try {
+            const res = await axios.post('http://localhost:5000/products/add', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(res.data);
+            setFormData({
+                pname: '',
+                pcategory: '',
+                description: '',
+                pprice: '',
+                image: null
+            });
+            setShowSuccessMessage(true);
+            setTimeout(() => {
+                setShowSuccessMessage(false);
+                navigate("/admin/products");
+            }, 2000);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     return (
         <AdminLayout>
+            {showSuccessMessage && (
+                <div className="alert alert-success mt-3" role="alert">
+                    Product created successfully!
+                </div>
+            )}
             <div className="bg-white p-3 mt-2">
                 <h3 className="fs-5 fw-bold">Add Product</h3>
                 <form onSubmit={handleSubmit}>
@@ -126,6 +135,7 @@ const AddProduct = () => {
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
+
             </div>
         </AdminLayout>
     );

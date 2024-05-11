@@ -72,7 +72,7 @@ const Orders = () => {
                         <thead>
                             <tr className='table-light'>
                                 <th scope="col">Order ID</th>
-                                <th scope="col">Customer ID</th>
+                                <th scope="col">Customer Email</th>
                                 <th scope="col">Product ID</th>
                                 <th scope="col">Order Date</th>
                                 <th scope="col">Total Amount</th>

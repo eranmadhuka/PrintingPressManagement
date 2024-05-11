@@ -45,6 +45,7 @@ import UpdateProduct from '../dashboard/adminDashboard/products/UpdateProduct';
 import CreateCategory from '../dashboard/adminDashboard/products/CreateCategory';
 import EditCategory from '../dashboard/adminDashboard/products/EditCategory';
 import CategoryDetails from '../dashboard/adminDashboard/products/CategoryDetails';
+import ProductDetails from '../dashboard/adminDashboard/products/ProductDetails';
 
 const AdminRoutes = () => {
     return (
@@ -65,6 +66,7 @@ const AdminRoutes = () => {
             <Route path="/products/AddCategory" element={<CreateCategory />} />
             <Route path="/products/editCategory/:id" element={<EditCategory />} />
             <Route path="/products/categoryDetails/:id" element={<CategoryDetails />} />
+            <Route path="/products/ProductDetails/:id" element={<ProductDetails />} />
 
             {/* Customers Routes */}
             <Route path="/customers" element={<Customers />} />

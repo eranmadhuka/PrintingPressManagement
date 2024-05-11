@@ -1,13 +1,19 @@
+//Employees.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import * as XLSX from "xlsx"; // Import the xlsx library
+import * as XLSX from "xlsx";
 
 const Employees = () => {
   const [employee, setEmployee] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [emailData, setEmailData] = useState({
+    to: "",
+    subject: "",
+    text: "",
+  });
 
   useEffect(() => {
     axios
@@ -48,12 +54,23 @@ const Employees = () => {
     item.empID.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Function to handle Excel download
   const handleDownloadExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(employee); // Convert JSON data to worksheet
-    const wb = XLSX.utils.book_new(); // Create a new workbook
-    XLSX.utils.book_append_sheet(wb, ws, "Employees"); // Add the worksheet to the workbook
-    XLSX.writeFile(wb, "employees.xlsx"); // Save the workbook as employees.xlsx
+    const ws = XLSX.utils.json_to_sheet(employee);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Employees");
+    XLSX.writeFile(wb, "employees.xlsx");
+  };
+
+  const handleInputChange = (e) => {
+    setEmailData({ ...emailData, [e.target.name]: e.target.value });
+  };
+
+  const handleEmailLink = () => {
+    const { to, subject, text } = emailData;
+    const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(text)}`;
+    window.location.href = mailtoLink;
   };
 
   return (
@@ -124,6 +141,44 @@ const Employees = () => {
             ))}
           </tbody>
         </table>
+
+        {/* Email form */}
+        <div className="mt-4">
+          <h4 className="fw-bold">Send Email</h4>
+          <div className="mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="To"
+              name="to"
+              value={emailData.to}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Subject"
+              name="subject"
+              value={emailData.subject}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="mb-3">
+            <textarea
+              className="form-control"
+              placeholder="Message"
+              rows="4"
+              name="text"
+              value={emailData.text}
+              onChange={handleInputChange}
+            ></textarea>
+          </div>
+          <button className="btn btn-primary" onClick={handleEmailLink}>
+            Send Email
+          </button>
+        </div>
       </div>
     </AdminLayout>
   );

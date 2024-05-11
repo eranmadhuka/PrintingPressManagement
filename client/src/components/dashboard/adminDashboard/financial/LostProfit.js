@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { Pie } from "react-chartjs-2";
+import Swal from "sweetalert2";
 
 const LostProfit = () => {
   // Initialize state for entries and search query
@@ -24,13 +25,27 @@ const LostProfit = () => {
 
   // Function to delete an entry
   const handleDelete = (id) => {
-    axios
-      .delete("http://localhost:5000/financial/deleteaccount/" + id)
-      .then((res) => {
-        console.log(res);
-        window.location.reload();
-      })
-      .catch((err) => console.log(err));
+    // Show confirmation dialog
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If confirmed, proceed with delete
+        axios
+          .delete("http://localhost:5000/financial/deleteaccount/" + id)
+          .then((res) => {
+            console.log(res);
+            window.location.reload();
+          })
+          .catch((err) => console.log(err));
+      }
+    });
   };
 
   // Filter entries based on search query
@@ -57,7 +72,7 @@ const LostProfit = () => {
       {
         data: [totalExpenses, totalRevenues],
         backgroundColor: ["#FF6384", "#36A2EB"],
-        hoverBackgroundColor: ["#FF6384", "#36A2EB"],
+        hoverBackgroundColor: ["#002868 ", "#BF0A30"],
       },
     ],
   };
@@ -109,12 +124,11 @@ const LostProfit = () => {
                   <td>{entry.date}</td>
                   <td>{entry.amount}</td>
                   <td>
-                    <Link to={`/admin/financial/updatentry/${entry._id}`} className="btn btn-warning me-2">
-                      Edit
+                    <Link to={`/admin/financial/updatentry/${entry._id}`} className="bi bi-pencil-square text-primary me-3">
+
                     </Link>
-                    <button type="button" className="btn btn-danger" onClick={(e) => handleDelete(entry._id)}>
-                      Delete
-                    </button>
+                    <i className="bi bi-trash-fill text-danger" onClick={(e) => handleDelete(entry._id)}></i>
+
                   </td>
                 </tr>
               ))}
@@ -139,12 +153,10 @@ const LostProfit = () => {
                   <td>{entry.date}</td>
                   <td>{entry.amount}</td>
                   <td>
-                    <Link to={`/admin/financial/updatentry/${entry._id}`} className="btn btn-warning me-2">
-                      Edit
+                    <Link to={`/admin/financial/updatentry/${entry._id}`} className="bi bi-pencil-square text-primary me-3">
+
                     </Link>
-                    <button type="button" className="btn btn-danger" onClick={(e) => handleDelete(entry._id)}>
-                      Delete
-                    </button>
+                    <i className="bi bi-trash-fill text-danger" onClick={(e) => handleDelete(entry._id)}></i>
                   </td>
                 </tr>
               ))}

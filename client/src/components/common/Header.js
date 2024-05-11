@@ -12,13 +12,14 @@ const Header = () => {
     Axios.defaults.withCredentials = true;
 
     useEffect(() => {
-        if (user) {
+        if (user && (user.role === "admin" || user.role === "user")) {
             Axios.get(`http://localhost:5000/auth/customer/` + user.email, {
                 headers: {
                     Authorization: `Bearer ${user.token}`,
                 },
             }).then((result) => {
                 console.log(result);
+
                 const filename = result.data.filename;
                 console.log(filename);
 

@@ -199,7 +199,7 @@ const CreateDelivery = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="customerid" className="form-label">
-                Customer Id
+                Customer Email
               </label>
               <input
                 type="text"

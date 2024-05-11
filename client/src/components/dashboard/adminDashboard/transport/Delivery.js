@@ -249,7 +249,7 @@ const Delivery = () => {
               <th scope="col">Driver Id</th>
               <th scope="col">Vehicle Id</th>
               <th scope="col">Product Id</th>
-              <th scope="col">Customer Id</th>
+              <th scope="col">Customer Email</th>
               <th scope="col">Address</th>
               <th scope="col">Product status</th>
             </tr>
