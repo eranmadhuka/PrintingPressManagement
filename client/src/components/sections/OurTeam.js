@@ -1,27 +1,20 @@
 import React from 'react';
 import MemberImg1 from '../../assets/images/users/user1.jpg';
-import chanuthi from '../../assets/images/members/chanuthi.jpg';
-import eran from '../../assets/images/members/eran.jpg';
-import eshani from '../../assets/images/members/eshani.jpg';
-import ravindu from '../../assets/images/members/ravindu.jpg';
-import sajith from '../../assets/images/members/sajith.jpg';
-import thisal from '../../assets/images/members/thisal.jpg';
-import vikum from '../../assets/images/members/vikum.jpg';
 
 const OurTeam = () => {
     const teamMembers = [
         {
-            img: vikum,
+            img: MemberImg1,
             name: "Vikim Bhashitha",
             designation: "Product Manager"
         },
         {
-            img: sajith,
+            img: MemberImg1,
             name: "Sajith Fernando",
             designation: "Customer Manager"
         },
         {
-            img: eran,
+            img: MemberImg1,
             name: "Eran Madhuka",
             designation: "Order Manager"
         },
@@ -31,22 +24,22 @@ const OurTeam = () => {
             designation: "Product Manager"
         },
         {
-            img: eshani,
+            img: MemberImg1,
             name: "Eshani Nanayakkara",
             designation: "Supplier Manager"
         },
         {
-            img: thisal,
+            img: MemberImg1,
             name: "Thisal",
             designation: "Transport Manager"
         },
         {
-            img: chanuthi,
+            img: MemberImg1,
             name: "Chanuthi Savithma",
             designation: "Employee Manager"
         },
         {
-            img: ravindu,
+            img: MemberImg1,
             name: "Ravindu Panadura",
             designation: "Financial Manager"
         },
