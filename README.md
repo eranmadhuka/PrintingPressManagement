@@ -1,32 +1,71 @@
-# Printing Press Management System
+# 🖨️ Printing Press Management System
 
 ## Overview
-The Printing Press Management System is a comprehensive application designed to streamline operations for printing presses. It provides tools for order management, inventory tracking, financial management, and customer relationship management.
+The Printing Press Management System is a comprehensive application designed to streamline printing presses' operations. It provides tools for order management, inventory tracking, financial management, and customer relationship management.
 
-## Features
-- **Order Management:** Easily process and track orders from creation to delivery.
-- **Inventory Tracking:** Manage inventory levels and track stock availability.
-- **Financial Management:** Monitor finances, track expenses, and generate financial reports.
-- **Customer Relationship Management:** Maintain customer records, track interactions, and manage customer inquiries.
+---
 
-## Technologies Used
-- **Frontend:** React.js
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB
-- **Other Tools:** Mongoose, Axios, Bootstrap
+## 🌟 Features
+- **Order Management**: Easily process and track orders from creation to delivery.
+- **Financial Management**: Monitor finances, track expenses, and generate detailed financial reports.
+- **Customer Relationship Management (CRM)**: Maintain customer records, track interactions, and manage customer inquiries efficiently.
+- **Employee Management**: Keep track of employee details, roles, and performance for smooth team operations.
+- **Supplier Management**: Manage supplier information, purchase orders, and supplier relationships seamlessly.
+- **Product Management**: Organize product inventory, track stock levels, and manage product details.
+- **Transport Management**: Oversee transport operations, assign deliveries, and optimize routes for efficiency.
 
-## Installation
-1. Clone the repository: `git clone <repository-url>`
-2. Install dependencies for the server: `cd server && npm install`
-3. Install dependencies for the client: `cd ../client && npm install`
+---
 
-## Usage
-1. Start the server: `cd ../server && npm start`
-2. Start the client: `cd ../client && npm start`
-3. Access the application at: `http://localhost:3000`
+## 🛠️ Technologies Used
+- **Frontend**: React.js
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB
+- **Other Tools**: Mongoose, Axios, Bootstrap
 
-## Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+---
 
-## License
-This project is licensed under the [MIT License](LICENSE).
+## 🔧 Installation
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/eranmadhuka/PrintingPressManagement.git
+   ```
+2. Install dependencies for the server:
+   ```bash
+   cd server && npm install
+   ```
+3. Install dependencies for the client: 
+   ```bash
+   cd ../client && npm install
+   ```
+---
+
+## 🚀 Usage
+1. Start the server:  
+   ```bash
+   cd ../server && npm start
+   ```
+2. Start the client:
+   ```bash
+   cd ../client && npm start
+   ```
+3. Access the application at:
+   ** http://localhost:3000
+
+---
+
+## 📸 Screenshots
+<p align="center">
+  <img src="screenshots/screenshot1.png" width="300">
+  <img src="screenshots/screenshot2.png" width="300">
+  <img src="screenshots/screenshot3.png" width="300">
+  <img src="screenshots/screenshot4.png" width="300">
+  <img src="screenshots/screenshot5.png" width="300">
+  <img src="screenshots/screenshot6.png" width="300">
+  <img src="screenshots/screenshot7.png" width="300">
+  <img src="screenshots/screenshot8.png" width="300">
+  <img src="screenshots/screenshot9.png" width="300">
+</p>
+
+
+
+
