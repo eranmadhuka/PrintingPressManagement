@@ -49,7 +49,7 @@ The Printing Press Management System is a comprehensive application designed to 
    cd ../client && npm start
    ```
 3. Access the application at:
-   ** http://localhost:3000
+   - http://localhost:3000
 
 ---
 
