@@ -59,10 +59,13 @@ We thank the following people for their contributions to this project:
 
 | Name               | GitHub Profile                          | Role/Contribution                      |
 |--------------------|-----------------------------------------|----------------------------------------|
-| Eran Madhuka       | [@eranmadhuka](https://github.com/eranmadhuka) | Full-stack Development, Project Lead  |
-| Contributor Name 1 | [@username1](https://github.com/username1)     | Backend Development                   |
-| Contributor Name 2 | [@username2](https://github.com/username2)     | Frontend Development                  |
-| Contributor Name 3 | [@username3](https://github.com/username3)     | UI/UX Design                          |
+| Eran Madhuka       | [@eranmadhuka](https://github.com/eranmadhuka) | Order Manager  |
+| Vikim Bhashitha | [@username1](https://github.com/username1)     | Product Manager                   |
+| Sajith Fernando | [@SajithPrawanthaFernando](https://github.com/SajithPrawanthaFernando)     | Customer Manager                  |
+| Eshani Nanayakkara | [@eshaninanayakkara](https://github.com/eshaninanayakkara)     |Supplier Manager                          |
+| Chanuthi Savithma | [@savithmaa](https://github.com/savithmaa)     |Employee Manager                         |
+| Thisal | [@thisaldil](https://github.com/thisaldil)     |Transport Manager                          |
+| Ravindu Dinuththara | [@ravindusiriwardana](https://github.com/ravindusiriwardana)     |Financial Manager                          |
 
 ---
 
